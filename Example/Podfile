@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'APKenBurnsView_Example', :exclusive => true do
+  pod 'APKenBurnsView', :path => '../'
+end
+
+target 'APKenBurnsView_Tests', :exclusive => true do
+  pod 'APKenBurnsView', :path => '../'
+
+  
+end
