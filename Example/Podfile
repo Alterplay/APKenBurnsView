@@ -1,11 +1,17 @@
+platform :ios, '8.0'
+
+source 'https://github.com/CocoaPods/Specs.git'
+
+inhibit_all_warnings!
 use_frameworks!
 
-target 'APKenBurnsView_Example', :exclusive => true do
+target 'APKenBurnsView_Example' do
   pod 'APKenBurnsView', :path => '../'
 end
 
-target 'APKenBurnsView_Tests', :exclusive => true do
+target 'APKenBurnsView_Tests' do
   pod 'APKenBurnsView', :path => '../'
 
+  pod 'Nimble'
   
 end
