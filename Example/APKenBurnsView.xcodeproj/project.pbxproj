@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		53265CC166553186D30AAA2C /* Pods_APKenBurnsView_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AEE961036EF037BC78D40A1 /* Pods_APKenBurnsView_Example.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		6F39246AEF3F67A18C0DC1C9 /* Pods_APKenBurnsView_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AEE961036EF037BC78D40A1 /* Pods_APKenBurnsView_Example.framework */; };
 		EA8274CBB831D37472833826 /* Pods_APKenBurnsView_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C0F5F58F2E97B29C0A58DB6 /* Pods_APKenBurnsView_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -28,8 +28,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		14596A8FE69B9164365D21DB /* Pods-APKenBurnsView_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APKenBurnsView_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-APKenBurnsView_Tests/Pods-APKenBurnsView_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		1C0F5F58F2E97B29C0A58DB6 /* Pods_APKenBurnsView_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_APKenBurnsView_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		22905DB8E18DFB9E8CE5B46A /* Pods-APKenBurnsView_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APKenBurnsView_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-APKenBurnsView_Example/Pods-APKenBurnsView_Example.release.xcconfig"; sourceTree = "<group>"; };
+		219DD14CC80B8CD08323FADF /* Pods-APKenBurnsView_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APKenBurnsView_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APKenBurnsView_Tests/Pods-APKenBurnsView_Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		2DD521B03693FC04ECB08B07 /* Pods-APKenBurnsView_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APKenBurnsView_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-APKenBurnsView_Example/Pods-APKenBurnsView_Example.release.xcconfig"; sourceTree = "<group>"; };
 		321175A734BEFC4B337A310B /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		484F2D93D6E2EF49D452C484 /* APKenBurnsView.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = APKenBurnsView.podspec; path = ../APKenBurnsView.podspec; sourceTree = "<group>"; };
 		4AEE961036EF037BC78D40A1 /* Pods_APKenBurnsView_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_APKenBurnsView_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -43,9 +45,8 @@
 		607FACE51AFB9204008FA782 /* APKenBurnsView_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = APKenBurnsView_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		AC293E6402820B4384EFEE2D /* Pods-APKenBurnsView_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APKenBurnsView_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-APKenBurnsView_Tests/Pods-APKenBurnsView_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		CA34969A2D644C79AAE6E799 /* Pods-APKenBurnsView_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APKenBurnsView_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APKenBurnsView_Tests/Pods-APKenBurnsView_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		DF4B77760D0882433FABBC84 /* Pods-APKenBurnsView_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APKenBurnsView_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APKenBurnsView_Example/Pods-APKenBurnsView_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		713554071D06CB8000723549 /* Pods_APKenBurnsView_Tests.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pods_APKenBurnsView_Tests.framework; path = "Pods/../build/Debug-iphoneos/Pods_APKenBurnsView_Tests.framework"; sourceTree = "<group>"; };
+		BC9DA3A91D455E2E2F711BD2 /* Pods-APKenBurnsView_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APKenBurnsView_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APKenBurnsView_Example/Pods-APKenBurnsView_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		E94A6E5DA89EF84AAD5F698C /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,7 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53265CC166553186D30AAA2C /* Pods_APKenBurnsView_Example.framework in Frameworks */,
+				6F39246AEF3F67A18C0DC1C9 /* Pods_APKenBurnsView_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,13 +70,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1FEFEA37CD3E4A02EC1D4D87 /* Pods */ = {
+		2F6B4FE2606D6F31C9C13B52 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				DF4B77760D0882433FABBC84 /* Pods-APKenBurnsView_Example.debug.xcconfig */,
-				22905DB8E18DFB9E8CE5B46A /* Pods-APKenBurnsView_Example.release.xcconfig */,
-				CA34969A2D644C79AAE6E799 /* Pods-APKenBurnsView_Tests.debug.xcconfig */,
-				AC293E6402820B4384EFEE2D /* Pods-APKenBurnsView_Tests.release.xcconfig */,
+				BC9DA3A91D455E2E2F711BD2 /* Pods-APKenBurnsView_Example.debug.xcconfig */,
+				2DD521B03693FC04ECB08B07 /* Pods-APKenBurnsView_Example.release.xcconfig */,
+				219DD14CC80B8CD08323FADF /* Pods-APKenBurnsView_Tests.debug.xcconfig */,
+				14596A8FE69B9164365D21DB /* Pods-APKenBurnsView_Tests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -83,6 +84,7 @@
 		508C3BD78B5C275A60EF951E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				713554071D06CB8000723549 /* Pods_APKenBurnsView_Tests.framework */,
 				4AEE961036EF037BC78D40A1 /* Pods_APKenBurnsView_Example.framework */,
 				1C0F5F58F2E97B29C0A58DB6 /* Pods_APKenBurnsView_Tests.framework */,
 			);
@@ -96,8 +98,8 @@
 				607FACD21AFB9204008FA782 /* Example for APKenBurnsView */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
-				1FEFEA37CD3E4A02EC1D4D87 /* Pods */,
 				508C3BD78B5C275A60EF951E /* Frameworks */,
+				2F6B4FE2606D6F31C9C13B52 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -166,12 +168,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "APKenBurnsView_Example" */;
 			buildPhases = (
-				4AD5D416D3FBBEEE6D76B1CA /* 📦 Check Pods Manifest.lock */,
+				A31E85175C78C481031CA37B /* 📦 Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
-				D7FF7CEF9C6D27E85B363AD4 /* 📦 Embed Pods Frameworks */,
-				839622CE5C2480FAEC5BAC0B /* 📦 Copy Pods Resources */,
+				699133879FBF3FD99212A6D7 /* 📦 Embed Pods Frameworks */,
+				85AE8E4FA2B27698835CA0FD /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -277,19 +279,19 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-APKenBurnsView_Tests/Pods-APKenBurnsView_Tests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4AD5D416D3FBBEEE6D76B1CA /* 📦 Check Pods Manifest.lock */ = {
+		699133879FBF3FD99212A6D7 /* 📦 Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "📦 Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-APKenBurnsView_Example/Pods-APKenBurnsView_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6B83B81A47BEE35639B93D33 /* 📦 Copy Pods Resources */ = {
@@ -307,7 +309,7 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-APKenBurnsView_Tests/Pods-APKenBurnsView_Tests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		839622CE5C2480FAEC5BAC0B /* 📦 Copy Pods Resources */ = {
+		85AE8E4FA2B27698835CA0FD /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -320,6 +322,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-APKenBurnsView_Example/Pods-APKenBurnsView_Example-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A31E85175C78C481031CA37B /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		B7A468D47DE288F5076D794D /* 📦 Check Pods Manifest.lock */ = {
@@ -335,21 +352,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		D7FF7CEF9C6D27E85B363AD4 /* 📦 Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "📦 Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-APKenBurnsView_Example/Pods-APKenBurnsView_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -486,9 +488,13 @@
 		};
 		607FACF01AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DF4B77760D0882433FABBC84 /* Pods-APKenBurnsView_Example.debug.xcconfig */;
+			baseConfigurationReference = BC9DA3A91D455E2E2F711BD2 /* Pods-APKenBurnsView_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				INFOPLIST_FILE = APKenBurnsView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
@@ -499,9 +505,13 @@
 		};
 		607FACF11AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 22905DB8E18DFB9E8CE5B46A /* Pods-APKenBurnsView_Example.release.xcconfig */;
+			baseConfigurationReference = 2DD521B03693FC04ECB08B07 /* Pods-APKenBurnsView_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				INFOPLIST_FILE = APKenBurnsView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
@@ -512,7 +522,7 @@
 		};
 		607FACF31AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CA34969A2D644C79AAE6E799 /* Pods-APKenBurnsView_Tests.debug.xcconfig */;
+			baseConfigurationReference = 219DD14CC80B8CD08323FADF /* Pods-APKenBurnsView_Tests.debug.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -531,7 +541,7 @@
 		};
 		607FACF41AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AC293E6402820B4384EFEE2D /* Pods-APKenBurnsView_Tests.release.xcconfig */;
+			baseConfigurationReference = 14596A8FE69B9164365D21DB /* Pods-APKenBurnsView_Tests.release.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
