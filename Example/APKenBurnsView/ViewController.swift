@@ -26,14 +26,12 @@ class ViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
-        kenBurnsView.animateWithDataSource(self, duration: 10.0)
+        kenBurnsView.animateWithDataSource(self)
     }
-
-
 }
 
 extension ViewController: APKenBurnsViewDataSource {
     func nextImageForKenBurnsView(kenBurnsView: APKenBurnsView) -> UIImage {
-        return UIImage(named:"rinat")!
+        return UIImage(named: "rinat")!
     }
 }
