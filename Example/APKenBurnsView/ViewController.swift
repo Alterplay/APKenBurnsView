@@ -20,13 +20,23 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-
+        kenBurnsView.dataSource = self
     }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
-        kenBurnsView.animateWithDataSource(self)
+        kenBurnsView.startAnimations()
+
+//        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(1.0 * Double(NSEC_PER_SEC)))
+//        dispatch_after(delayTime, dispatch_get_main_queue()) {
+//            self.kenBurnsView.pauseAnimations()
+//        }
+//
+//        let delayTime2 = dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Double(NSEC_PER_SEC)))
+//        dispatch_after(delayTime2, dispatch_get_main_queue()) {
+//            self.kenBurnsView.resumeAnimations()
+//        }
     }
 }
 
