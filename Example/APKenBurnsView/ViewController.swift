@@ -31,7 +31,7 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: APKenBurnsViewDataSource {
-    func nextImageForKenBurnsView(kenBurnsView: APKenBurnsView) -> UIImage {
+    func nextImageForKenBurnsView(kenBurnsView: APKenBurnsView) -> UIImage? {
         return UIImage(named: "rinat")!
     }
 }

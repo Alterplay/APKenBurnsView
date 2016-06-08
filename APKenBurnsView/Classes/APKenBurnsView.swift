@@ -7,7 +7,7 @@ import UIKit
 import QuartzCore
 
 public protocol APKenBurnsViewDataSource: class {
-    func nextImageForKenBurnsView(kenBurnsView: APKenBurnsView) -> UIImage
+    func nextImageForKenBurnsView(kenBurnsView: APKenBurnsView) -> UIImage?
 }
 
 
@@ -15,19 +15,18 @@ public protocol APKenBurnsViewDelegate: class {
 
 }
 
-enum KenBurnsTransitionEffect {
-    case KenBurnsTransitionEffectCrossFade
+enum TransitionEffect {
+    case TransitionEffectCrossFade
 }
 
-struct KenBurnsAnimationConfiguration {
-    let firstImageTransition: ImageTransition
-    let secondImageTransition: ImageTransition
+struct Transition {
+    let imageTransition: ImageAnimation
 
-    let transitionEffect: KenBurnsTransitionEffect = .KenBurnsTransitionEffectCrossFade
+    let transitionEffect: TransitionEffect = .TransitionEffectCrossFade
     let transitionDuration: Double
 }
 
-struct ImageTransition {
+struct ImageAnimation {
     let startState: ImageState
     let endState: ImageState
 
@@ -52,12 +51,17 @@ public class APKenBurnsView: UIView {
 
     var scaleFactorDeviation: Float = 0.5
 
+    var imageAnimationDuration: Double = 5.0
+    var imageAnimationDurationDeviation: Double = 0.0
+
+    var transitionAnimationDuration: Double = 2.0
+    var transitionAnimationDurationDeviation: Double = 0.0
+
     // MARK: - Private Variables
-    var duration: Double = 10.0
 
     lazy var firstImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = UIColor.redColor()
+        imageView.tag = 1
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = UIViewContentMode.Center
         self.addSubview(imageView)
@@ -86,7 +90,7 @@ public class APKenBurnsView: UIView {
 
     lazy var secondImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = UIColor.blueColor()
+        imageView.tag = 2
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = UIViewContentMode.Center
         self.addSubview(imageView)
@@ -144,81 +148,75 @@ public class APKenBurnsView: UIView {
     }
 
     private func randomFloat(lower: Float = 0.0, upper: Float) -> Float {
-//        return Float(lower + Int(arc4random_uniform(UInt32(upper - lower + 1))))
         return (Float(arc4random()) / 0xFFFFFFFF) * (upper - lower) + lower
     }
 
+    private func randomDouble(lower: Double = 0.0, upper: Double) -> Double {
+        return (Double(arc4random()) / 0xFFFFFFFF) * (upper - lower) + lower
+    }
+
     private func startAnimating() {
+        firstImageView.alpha = 1.0
+        secondImageView.alpha = 0.0
 
         let image = dataSource?.nextImageForKenBurnsView(self)
+        startTransitionWithImage(image!, imageView: firstImageView, nextImageView: secondImageView)
+    }
 
-        self.firstImageView.image = image
-        self.secondImageView.image = image
+    private func startTransitionWithImage(image: UIImage, imageView: UIImageView, nextImageView: UIImageView) {
+        let imageTransition = buildRandomTransitionForImage(image)
 
-        self.firstImageView.alpha = 1.0
-        self.secondImageView.alpha = 0.0
+        imageView.image = image
+        animateImageView(imageView, withTransition: imageTransition)
 
-//        let firstImageStartState = ImageState(scale: 1.5, position: CGPointMake(0.0, 0.0))
-//        let firstImageEndState = ImageState(scale: 1.6, position: CGPointMake(200.0, 200.0))
-//        let firstImageTransition = ImageTransition(startState: firstImageStartState, endState: firstImageEndState, duration: 5.0)
-        let firstImageTransition = buildRandomTransitionForImage(image!)
-        let secondImageTransition = buildRandomTransitionForImage(image!)
+        let durationDeviation = transitionAnimationDuration > 0.0 ? randomDouble(-transitionAnimationDuration, upper: transitionAnimationDuration) : 0.0
+        let duration = transitionAnimationDuration + durationDeviation
+        let delay = imageTransition.duration - duration / 2
 
-        let animationConfiguration = KenBurnsAnimationConfiguration(firstImageTransition: firstImageTransition,
-                                                                    secondImageTransition: secondImageTransition,
-                                                                    transitionDuration: 2.0)
-//
-//        let biggestFaceRect = detectBiggestFaceRectInImage(image!)!
-//        let faceRectCenter = CGPointMake(CGRectGetMidX(biggestFaceRect), CGRectGetMidY(biggestFaceRect))
-//
-//        let translationTransform = CGAffineTransformMakeTranslation(-(self.bounds.size.width / 2.0 - faceRectCenter.x), -(self.bounds.size.height / 2.0 - faceRectCenter.y))
-//        let zoomTransform = CGAffineTransformMakeScale(1.9, 1.9)
-//        let transform = CGAffineTransformConcat(translationTransform, zoomTransform)
-        let firstImageStartTransform = transformForImageState(animationConfiguration.firstImageTransition.startState)
-        let firstImageEndTransform = transformForImageState(animationConfiguration.firstImageTransition.endState)
+        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC)))
+        dispatch_after(delayTime, dispatch_get_main_queue()) {
+            UIView.animateWithDuration(duration,
+                                       delay: 0.0,
+                                       options: UIViewAnimationOptions.CurveEaseInOut,
+                                       animations: {
+                                           imageView.alpha = 0.0
+                                           nextImageView.alpha = 1.0
+                                       },
+                                       completion: {
+                                           finished in
 
-        let secondImageStartTransform = transformForImageState(animationConfiguration.secondImageTransition.startState)
-        let secondImageEndTransform = transformForImageState(animationConfiguration.secondImageTransition.endState)
 
-        self.firstImageView.transform = firstImageStartTransform
-        self.secondImageView.transform = secondImageStartTransform
+                                       })
 
-        UIView.animateWithDuration(animationConfiguration.firstImageTransition.duration,
+
+            var nextImage = self.dataSource?.nextImageForKenBurnsView(self)
+            if nextImage == nil {
+                nextImage = image
+            }
+
+            self.startTransitionWithImage(nextImage!, imageView: nextImageView, nextImageView: imageView)
+        }
+    }
+
+    private func animateImageView(imageView: UIImageView, withTransition transition: ImageAnimation) {
+        let imageStartTransform = transformForImageState(transition.startState)
+        let imageEndTransform = transformForImageState(transition.endState)
+
+        imageView.transform = imageStartTransform
+
+        UIView.animateWithDuration(transition.duration,
                                    delay: 0.0,
                                    options: UIViewAnimationOptions.CurveEaseInOut,
                                    animations: {
-                                       self.firstImageView.transform = firstImageEndTransform
+                                       imageView.transform = imageEndTransform
                                    },
                                    completion: {
                                        finished in
 
-                                       print(firstImageTransition)
-                                   })
-        UIView.animateWithDuration(animationConfiguration.secondImageTransition.duration,
-                                   delay: animationConfiguration.firstImageTransition.duration - animationConfiguration.transitionDuration / 2,
-                                   options: UIViewAnimationOptions.CurveEaseInOut,
-                                   animations: {
-                                       self.secondImageView.transform = secondImageEndTransform
-                                   },
-                                   completion: {
-                                       finished in
-
-                                       print(secondImageTransition)
-                                   })
-
-        let transitionDelay = animationConfiguration.firstImageTransition.duration - animationConfiguration.transitionDuration / 2
-        UIView.animateWithDuration(animationConfiguration.transitionDuration,
-                                   delay: transitionDelay,
-                                   options: UIViewAnimationOptions.CurveEaseInOut,
-                                   animations: {
-                                       self.firstImageView.alpha = 0.0
-                                       self.secondImageView.alpha = 1.0
-                                   },
-                                   completion: {
-                                       finished in
-
+                                       print(transition)
                                    })
     }
+
 
     private func transformForImageState(imageState: ImageState) -> CGAffineTransform {
         let scaleTransform = CGAffineTransformMakeScale(imageState.scale, imageState.scale)
@@ -227,7 +225,7 @@ public class APKenBurnsView: UIView {
         return transform
     }
 
-    private func buildRandomTransitionForImage(image: UIImage) -> ImageTransition {
+    private func buildRandomTransitionForImage(image: UIImage) -> ImageAnimation {
         let scaleForAspectFill = imageScaleForAspectFill(image)
 
         let startScaleDeviation = CGFloat(randomFloat(upper: scaleFactorDeviation))
@@ -265,9 +263,12 @@ public class APKenBurnsView: UIView {
         let imageEndPosition = CGPointMake(imageEndPositionX, imageEndPositionY)
 
 
+        let durationDeviation = imageAnimationDurationDeviation > 0.0 ? randomDouble(-imageAnimationDurationDeviation, upper: imageAnimationDurationDeviation) : 0.0
+        let duration = imageAnimationDuration + durationDeviation
+
         let imageStartState = ImageState(scale: startScale, position: imageStartPosition)
         let imageEndState = ImageState(scale: endScale, position: imageEndPosition)
-        let imageTransition = ImageTransition(startState: imageStartState, endState: imageEndState, duration: 5.0)
+        let imageTransition = ImageAnimation(startState: imageStartState, endState: imageEndState, duration: duration)
 
         return imageTransition
     }
