@@ -145,17 +145,17 @@ public class APKenBurnsView: UIView {
     }
 
     private func startTransitionWithImage(image: UIImage, imageView: UIImageView, nextImageView: UIImageView) {
-        let imageTransition = animationDataSource.buildAnimationForImage(image, forAnimationRect: bounds)
+        let animation = animationDataSource.buildAnimationForImage(image, forAnimationRect: bounds)
 
         imageView.image = image
-        imageView.animateWithImageAnimation(imageTransition!)
+        imageView.animateWithImageAnimation(animation!)
 
         var durationDeviation = 0.0
         if (transitionAnimationDuration > 0.0) {
             durationDeviation = Double.random(min: -transitionAnimationDuration, max: transitionAnimationDuration)
         }
         let duration = transitionAnimationDuration + durationDeviation
-        let delay = imageTransition!.duration - duration / 2
+        let delay = animation!.duration - duration / 2
 
         let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC)))
         dispatch_after(delayTime, dispatch_get_main_queue()) {
@@ -171,7 +171,6 @@ public class APKenBurnsView: UIView {
 
 
                                        })
-
 
             var nextImage = self.dataSource?.nextImageForKenBurnsView(self)
             if nextImage == nil {
