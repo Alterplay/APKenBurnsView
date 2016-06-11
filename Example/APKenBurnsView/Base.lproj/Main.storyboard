@@ -10,8 +10,8 @@
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="APKenBurnsView_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
-                        <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
+                        <viewControllerLayoutGuide type="top" id="Vng-bJ-gpu"/>
+                        <viewControllerLayoutGuide type="bottom" id="lM4-Yj-eXn"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
@@ -19,15 +19,15 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ZC-FN-H9v" customClass="APKenBurnsView" customModule="APKenBurnsView">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="1ZC-FN-H9v" secondAttribute="trailing" id="43D-BF-9Gz"/>
-                            <constraint firstItem="1ZC-FN-H9v" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="K1W-2l-ZpA"/>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="1ZC-FN-H9v" secondAttribute="bottom" id="ary-Oo-ITF"/>
-                            <constraint firstItem="1ZC-FN-H9v" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="zsP-4P-ynE"/>
+                            <constraint firstItem="lM4-Yj-eXn" firstAttribute="top" secondItem="1ZC-FN-H9v" secondAttribute="bottom" id="6aw-OP-sms"/>
+                            <constraint firstItem="1ZC-FN-H9v" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="gEp-Wm-yuT"/>
+                            <constraint firstAttribute="trailing" secondItem="1ZC-FN-H9v" secondAttribute="trailing" id="mR6-3E-WuG"/>
+                            <constraint firstItem="1ZC-FN-H9v" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="p0g-aI-d0l"/>
                         </constraints>
                     </view>
                     <connections>

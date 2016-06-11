@@ -7,13 +7,6 @@ import CoreGraphics
 
 extension Int {
     /**
-     Returns random Int between 0 and max-1
-     */
-    static func random(max max: Int) -> Int {
-        return Int(arc4random_uniform(UInt32(max)))
-    }
-
-    /**
      Returns random integer between min and max
      */
     static func random(min min: Int = 0, max: Int) -> Int {
@@ -48,3 +41,11 @@ extension CGFloat {
     }
 }
 
+extension Bool {
+    /**
+     Returns random CGFloat
+     */
+    static func random() -> Bool {
+        return Bool(Int(arc4random_uniform(UInt32(2))))
+    }
+}

@@ -33,7 +33,9 @@ class AnimationDataSourceFactory: AnimationDataSourceFactoryProtocol {
             case .None:
                 return DefaultAnimationDataSource(animationDependencies: animationDependencies)
             case .BiggestFace:
-                return BiggestFaceAnimationDataSource(animationDependencies: animationDependencies)
+                let backupAnimationDataSource = DefaultAnimationDataSource(animationDependencies: animationDependencies)
+                return BiggestFaceAnimationDataSource(animationDependencies: animationDependencies,
+                                                      backupAnimationDataSource: backupAnimationDataSource)
         }
     }
 }

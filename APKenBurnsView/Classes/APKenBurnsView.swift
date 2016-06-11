@@ -21,8 +21,6 @@ public enum APKenBurnsViewFaceRecognitionMode {
 }
 
 
-
-
 extension UIImageView {
 
     // MARK: - Public
@@ -31,15 +29,14 @@ extension UIImageView {
         let imageStartTransform = transformForImageState(animation.startState)
         let imageEndTransform = transformForImageState(animation.endState)
 
-        self.transform = imageStartTransform
-
-        UIView.animateWithDuration(animation.duration,
-                                   delay: 0.0,
-                                   options: UIViewAnimationOptions.CurveEaseInOut,
-                                   animations: {
-                                       self.transform = imageEndTransform
-                                   },
-                                   completion: nil)
+        UIView.animateKeyframesWithDuration(animation.duration, delay: 0, options: .CalculationModeCubic, animations: {
+            UIView.addKeyframeWithRelativeStartTime(0.0, relativeDuration: 0.0) {
+                self.transform = imageStartTransform
+            }
+            UIView.addKeyframeWithRelativeStartTime(0.0, relativeDuration: 1.0) {
+                self.transform = imageEndTransform
+            }
+        }, completion: nil)
     }
 
     // MARK: - Helpers
@@ -53,19 +50,13 @@ extension UIImageView {
 }
 
 
-
-
-
-
-
-
 public class APKenBurnsView: UIView {
 
     // MARK: -
     public weak var dataSource: APKenBurnsViewDataSource?
     public weak var delegate: APKenBurnsViewDelegate?
 
-    // MARK: - Setup
+    // MARK: - Animation Setup
     public var faceRecognitionMode: APKenBurnsViewFaceRecognitionMode = .None
 
     public var scaleFactorDeviation: Float = 0.5
@@ -76,17 +67,35 @@ public class APKenBurnsView: UIView {
     public var transitionAnimationDuration: Double = 2.0
     public var transitionAnimationDurationDeviation: Double = 0.0
 
+    public var showFaceRectangles: Bool = false
+
     // MARK: - Private Variables
 
-    private lazy var firstImageView: UIImageView = {
-        return self.buildDefaultImageView()
-    }()
-
-    private lazy var secondImageView: UIImageView = {
-        return self.buildDefaultImageView()
-    }()
+    var firstImageView: UIImageView!
+    var secondImageView: UIImageView!
 
     private var animationDataSource: AnimationDataSource!
+    private var facesDrawer: FacesDrawerProtocol!
+
+    // MARK: - Init
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setup()
+    }
+
+    // MARK: - Setup
+
+    private func setup() {
+        firstImageView = buildDefaultImageView()
+        secondImageView = buildDefaultImageView()
+        facesDrawer = FacesDrawer()
+    }
 
     // MARK: - Public
 
@@ -109,23 +118,8 @@ public class APKenBurnsView: UIView {
     public func stopAnimations() {
     }
 
-    // MARK: - Lifecycle
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setup()
-    }
-
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
 
     // MARK: - Private
-
-    private func setup() {
-
-    }
 
     private func buildAnimationDataSource() -> AnimationDataSource {
         let animationDependencies = ImageAnimationDependencies(scaleFactorDeviation: scaleFactorDeviation,
@@ -145,10 +139,14 @@ public class APKenBurnsView: UIView {
     }
 
     private func startTransitionWithImage(image: UIImage, imageView: UIImageView, nextImageView: UIImageView) {
-        let animation = animationDataSource.buildAnimationForImage(image, forAnimationRect: bounds)
+        let animation = animationDataSource.buildAnimationForImage(image, forViewPortSize: bounds.size)
 
         imageView.image = image
         imageView.animateWithImageAnimation(animation!)
+
+        if showFaceRectangles {
+            facesDrawer.drawFacesInView(imageView, image: image)
+        }
 
         var durationDeviation = 0.0
         if (transitionAnimationDuration > 0.0) {
@@ -169,7 +167,7 @@ public class APKenBurnsView: UIView {
                                        completion: {
                                            finished in
 
-
+                                           self.facesDrawer.cleanUpForView(imageView)
                                        })
 
             var nextImage = self.dataSource?.nextImageForKenBurnsView(self)
@@ -182,7 +180,7 @@ public class APKenBurnsView: UIView {
     }
 
     private func buildDefaultImageView() -> UIImageView {
-        let imageView = UIImageView()
+        let imageView = UIImageView(frame: bounds)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = UIViewContentMode.Center
         self.addSubview(imageView)

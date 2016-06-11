@@ -6,7 +6,5 @@ import Foundation
 
 
 internal protocol AnimationDataSource {
-    var animationDependencies: ImageAnimationDependencies { get }
-
-    func buildAnimationForImage(image: UIImage, forAnimationRect animationRect: CGRect) -> ImageAnimation?  // TODO
+    func buildAnimationForImage(image: UIImage, forViewPortSize viewPortSize: CGSize) -> ImageAnimation?  // TODO
 }

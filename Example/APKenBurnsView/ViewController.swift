@@ -21,12 +21,27 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         kenBurnsView.dataSource = self
+        kenBurnsView.showFaceRectangles = true
+        kenBurnsView.faceRecognitionMode = .BiggestFace
+
+
+//        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(3.0 * Double(NSEC_PER_SEC)))
+//        dispatch_after(delayTime, dispatch_get_main_queue()) {
+//            let viewController = UIViewController()
+//
+//            self.presentViewController(viewController, animated: true, completion: nil)
+//
+//            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Double(NSEC_PER_SEC)))
+//            dispatch_after(delayTime, dispatch_get_main_queue()) {
+//                viewController.dismissViewControllerAnimated(true, completion: nil)
+//            }
+//        }
     }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
-        kenBurnsView.startAnimations()
+        self.kenBurnsView.startAnimations()
 
 //        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(1.0 * Double(NSEC_PER_SEC)))
 //        dispatch_after(delayTime, dispatch_get_main_queue()) {
@@ -42,6 +57,6 @@ class ViewController: UIViewController {
 
 extension ViewController: APKenBurnsViewDataSource {
     func nextImageForKenBurnsView(kenBurnsView: APKenBurnsView) -> UIImage? {
-        return UIImage(named: "rinat")!
+        return UIImage(named: "happy-family")!//UIImage(named: "earth")!//UIImage(named: "marilyn")!//UIImage(named: "face")! //UIImage(named: "happy-family")!
     }
 }
