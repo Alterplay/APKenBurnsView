@@ -21,8 +21,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         kenBurnsView.dataSource = self
-        kenBurnsView.showFaceRectangles = true
+//        kenBurnsView.showFaceRectangles = true
         kenBurnsView.faceRecognitionMode = .BiggestFace
+
 
 
 //        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(3.0 * Double(NSEC_PER_SEC)))

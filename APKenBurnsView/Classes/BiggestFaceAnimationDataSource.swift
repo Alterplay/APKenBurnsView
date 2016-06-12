@@ -28,7 +28,7 @@ class BiggestFaceAnimationDataSource: AnimationDataSource {
 
     // MARK: - Public
 
-    func buildAnimationForImage(image: UIImage, forViewPortSize viewPortSize: CGSize) -> ImageAnimation? {
+    func buildAnimationForImage(image: UIImage, forViewPortSize viewPortSize: CGSize) -> ImageAnimation {
         guard let biggestFaceRect = image.biggestFaceRect() else {
             return backupAnimationDataSource.buildAnimationForImage(image, forViewPortSize: viewPortSize)
         }
@@ -38,39 +38,34 @@ class BiggestFaceAnimationDataSource: AnimationDataSource {
         let startScale: CGFloat = animationCalculator.buildRandomScale(imageSize: imageSize, viewPortSize: viewPortSize)
         let endScale: CGFloat = animationCalculator.buildRandomScale(imageSize: imageSize, viewPortSize: viewPortSize)
 
+        let scaledStartImageSize = imageSize.scaledSize(startScale)
+        let scaledEndImageSize = imageSize.scaledSize(endScale)
 
+        let startFromFace = Bool.random()
 
-        let scaledImageSize = image.size.scaledSize(startScale)
-
-        let imageCenter = CGPointMake(viewPortSize.width / 2, viewPortSize.height / 2)
-        let imageFrameScaled = CGRect(center: imageCenter, size: scaledImageSize)
-
-        let faceRectScaled = CGRectApplyAffineTransform(biggestFaceRect, CGAffineTransformMakeScale(startScale, startScale))
-
-        let faceRectConvertedX: CGFloat = imageFrameScaled.origin.x + faceRectScaled.origin.x
-        let faceRectConvertedY: CGFloat = imageFrameScaled.origin.y + faceRectScaled.origin.y
-        let faceRectConverted = CGRectIntegral(CGRectMake(faceRectConvertedX,
-                                                          faceRectConvertedY,
-                                                          faceRectScaled.size.width,
-                                                          faceRectScaled.size.height))
-
-
-
-        let startFromFace = true //Bool.random()
         var imageStartPosition: CGPoint = CGPointZero
         if startFromFace {
-            let centerOfFaceRect = faceRectConverted.center()
-            imageStartPosition = CGPointMake(-(centerOfFaceRect.x - viewPortSize.width / 2),
-                                             -(centerOfFaceRect.y - viewPortSize.height / 2))
+            let faceRectScaled = CGRectApplyAffineTransform(biggestFaceRect, CGAffineTransformMakeScale(startScale, startScale))
+            imageStartPosition = animationCalculator.buildFacePosition(faceRect: faceRectScaled,
+                                                                       imageSize: scaledStartImageSize,
+                                                                       viewPortSize: viewPortSize)
         } else {
-            imageStartPosition = animationCalculator.buildPinnedToEdgesPosition(imageSize: scaledImageSize,
+            imageStartPosition = animationCalculator.buildPinnedToEdgesPosition(imageSize: scaledStartImageSize,
                                                                                 viewPortSize: viewPortSize)
         }
 
-//        let imageEndPosition = imageStartPosition
-        let imageEndPosition = animationCalculator.buildOppositeAnglePosition(startPosition: imageStartPosition,
-                                                                              imageSize: scaledImageSize,
+
+        var imageEndPosition: CGPoint = CGPointZero
+        if !startFromFace {
+            let faceRectScaled = CGRectApplyAffineTransform(biggestFaceRect, CGAffineTransformMakeScale(endScale, endScale))
+            imageEndPosition = animationCalculator.buildFacePosition(faceRect: faceRectScaled,
+                                                                     imageSize: scaledEndImageSize,
+                                                                     viewPortSize: viewPortSize)
+        } else {
+            imageEndPosition = animationCalculator.buildOppositeAnglePosition(startPosition: imageStartPosition,
+                                                                              imageSize: scaledEndImageSize,
                                                                               viewPortSize: viewPortSize)
+        }
 
         let duration = animationCalculator.buildAnimationDuration()
 
@@ -80,30 +75,4 @@ class BiggestFaceAnimationDataSource: AnimationDataSource {
 
         return imageTransition
     }
-
-    // MARK: - Private
-
-    private func translateToImageCoordinates(point point: CGPoint, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint {
-        let x = imageSize.width / 2 - viewPortSize.width / 2 - point.x
-        let y = imageSize.height / 2 - viewPortSize.height / 2 - point.y
-        let position = CGPointMake(x, y)
-        return position
-    }
-
 }
-
-
-extension CGRect {
-    func scaledRect(scale: CGFloat) -> CGRect {
-        return CGRectMake(origin.x * scale, origin.y * scale, width * scale, height * scale)
-    }
-
-    func center() -> CGPoint {
-        return CGPointMake(origin.x + (size.width / 2), origin.y + (size.height / 2))
-    }
-
-    init(center: CGPoint, size: CGSize) {
-        self = CGRectMake(center.x - (size.width / 2), center.y - (size.height / 2), size.width, size.height)
-    }
-}
-

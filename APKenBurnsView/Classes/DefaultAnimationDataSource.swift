@@ -24,7 +24,7 @@ class DefaultAnimationDataSource: AnimationDataSource {
 
     // MARK: - Public
 
-    func buildAnimationForImage(image: UIImage, forViewPortSize viewPortSize: CGSize) -> ImageAnimation? {
+    func buildAnimationForImage(image: UIImage, forViewPortSize viewPortSize: CGSize) -> ImageAnimation {
         let imageSize = image.size
 
         let startScale = animationCalculator.buildRandomScale(imageSize: imageSize, viewPortSize: viewPortSize)
@@ -55,12 +55,5 @@ class DefaultAnimationDataSource: AnimationDataSource {
         let y = imageSize.height / 2 - viewPortSize.height / 2 - point.y
         let position = CGPointMake(x, y)
         return position
-    }
-}
-
-
-extension CGSize {
-    func scaledSize(scale: CGFloat) -> CGSize {
-        return CGSizeMake(width * scale, height * scale)
     }
 }

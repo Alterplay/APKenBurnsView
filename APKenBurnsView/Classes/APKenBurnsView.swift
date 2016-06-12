@@ -21,35 +21,6 @@ public enum APKenBurnsViewFaceRecognitionMode {
 }
 
 
-extension UIImageView {
-
-    // MARK: - Public
-
-    func animateWithImageAnimation(animation: ImageAnimation) {
-        let imageStartTransform = transformForImageState(animation.startState)
-        let imageEndTransform = transformForImageState(animation.endState)
-
-        UIView.animateKeyframesWithDuration(animation.duration, delay: 0, options: .CalculationModeCubic, animations: {
-            UIView.addKeyframeWithRelativeStartTime(0.0, relativeDuration: 0.0) {
-                self.transform = imageStartTransform
-            }
-            UIView.addKeyframeWithRelativeStartTime(0.0, relativeDuration: 1.0) {
-                self.transform = imageEndTransform
-            }
-        }, completion: nil)
-    }
-
-    // MARK: - Helpers
-
-    private func transformForImageState(imageState: ImageState) -> CGAffineTransform {
-        let scaleTransform = CGAffineTransformMakeScale(imageState.scale, imageState.scale)
-        let translationTransform = CGAffineTransformMakeTranslation(imageState.position.x, imageState.position.y)
-        let transform = CGAffineTransformConcat(scaleTransform, translationTransform)
-        return transform
-    }
-}
-
-
 public class APKenBurnsView: UIView {
 
     // MARK: -
@@ -61,7 +32,7 @@ public class APKenBurnsView: UIView {
 
     public var scaleFactorDeviation: Float = 0.5
 
-    public var imageAnimationDuration: Double = 5.0
+    public var imageAnimationDuration: Double = 6.0
     public var imageAnimationDurationDeviation: Double = 0.0
 
     public var transitionAnimationDuration: Double = 2.0
@@ -76,6 +47,8 @@ public class APKenBurnsView: UIView {
 
     private var animationDataSource: AnimationDataSource!
     private var facesDrawer: FacesDrawerProtocol!
+
+    private var timer: BlockTimer?
 
     // MARK: - Init
 
@@ -95,6 +68,16 @@ public class APKenBurnsView: UIView {
         firstImageView = buildDefaultImageView()
         secondImageView = buildDefaultImageView()
         facesDrawer = FacesDrawer()
+    }
+
+    // MARK: - Lifecycle
+
+    public override func didMoveToSuperview() {
+        // required to break timer retain cycle
+        guard superview == nil else {
+            return
+        }
+        stopTimer()   // TODO consider call of stopAnimations() ??
     }
 
     // MARK: - Public
@@ -119,6 +102,19 @@ public class APKenBurnsView: UIView {
     }
 
 
+
+    // MARK: - Timer
+
+    func startTimerWithDelay(delay: Double, callback: () -> ()) {
+        stopTimer()
+
+        timer = BlockTimer(interval: delay, callback: callback)
+    }
+
+    func stopTimer() {
+        timer?.cancel()
+    }
+
     // MARK: - Private
 
     private func buildAnimationDataSource() -> AnimationDataSource {
@@ -134,49 +130,77 @@ public class APKenBurnsView: UIView {
         firstImageView.alpha = 1.0
         secondImageView.alpha = 0.0
 
+        runningTimer = RunningTimer()
+
         let image = dataSource?.nextImageForKenBurnsView(self)
         startTransitionWithImage(image!, imageView: firstImageView, nextImageView: secondImageView)
     }
 
+    var runningTimer: RunningTimer!
+
     private func startTransitionWithImage(image: UIImage, imageView: UIImageView, nextImageView: UIImageView) {
-        let animation = animationDataSource.buildAnimationForImage(image, forViewPortSize: bounds.size)
-
-        imageView.image = image
-        imageView.animateWithImageAnimation(animation!)
-
-        if showFaceRectangles {
-            facesDrawer.drawFacesInView(imageView, image: image)
+        guard isValidAnimationDurations() else {
+            fatalError("Animation durations setup is invalid!")
         }
 
-        var durationDeviation = 0.0
-        if (transitionAnimationDuration > 0.0) {
-            durationDeviation = Double.random(min: -transitionAnimationDuration, max: transitionAnimationDuration)
-        }
-        let duration = transitionAnimationDuration + durationDeviation
-        let delay = animation!.duration - duration / 2
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            let startTime = self.runningTimer.duration
 
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC)))
-        dispatch_after(delayTime, dispatch_get_main_queue()) {
-            UIView.animateWithDuration(duration,
-                                       delay: 0.0,
-                                       options: UIViewAnimationOptions.CurveEaseInOut,
-                                       animations: {
-                                           imageView.alpha = 0.0
-                                           nextImageView.alpha = 1.0
-                                       },
-                                       completion: {
-                                           finished in
+            var animation = self.animationDataSource.buildAnimationForImage(image, forViewPortSize: self.bounds.size)
 
-                                           self.facesDrawer.cleanUpForView(imageView)
-                                       })
+            dispatch_async(dispatch_get_main_queue()) {
 
-            var nextImage = self.dataSource?.nextImageForKenBurnsView(self)
-            if nextImage == nil {
-                nextImage = image
+                let endTime = self.runningTimer.duration
+                let animationTimeCompensation = endTime - startTime
+//                print(animationTimeCompensation)
+
+                animation = ImageAnimation(startState: animation.startState, endState: animation.endState, duration: animation.duration - animationTimeCompensation)
+
+
+                imageView.image = image
+                imageView.animateWithImageAnimation(animation)
+
+                if self.showFaceRectangles {
+                    self.facesDrawer.drawFacesInView(imageView, image: image)
+                }
+
+                var durationDeviation = 0.0
+                if (self.transitionAnimationDurationDeviation > 0.0) {
+                    durationDeviation = Double.random(min: -self.transitionAnimationDurationDeviation, max: self.transitionAnimationDurationDeviation)
+                }
+                let duration = self.transitionAnimationDuration + durationDeviation
+                let delay = animation.duration - duration / 2
+
+
+
+                self.startTimerWithDelay(delay) {
+                    UIView.animateWithDuration(duration,
+                                               delay: 0.0,
+                                               options: UIViewAnimationOptions.CurveEaseInOut,
+                                               animations: {
+                                                   imageView.alpha = 0.0
+                                                   nextImageView.alpha = 1.0
+                                               },
+                                               completion: {
+                                                   finished in
+
+                                                   self.facesDrawer.cleanUpForView(imageView)
+                                               })
+
+                    var nextImage = self.dataSource?.nextImageForKenBurnsView(self)
+                    if nextImage == nil {
+                        nextImage = image
+                    }
+
+                    self.startTransitionWithImage(nextImage!, imageView: nextImageView, nextImageView: imageView)
+                }
             }
-
-            self.startTransitionWithImage(nextImage!, imageView: nextImageView, nextImageView: imageView)
         }
+    }
+
+    private func isValidAnimationDurations() -> Bool {
+        return imageAnimationDuration - imageAnimationDurationDeviation -
+               (transitionAnimationDuration - transitionAnimationDurationDeviation) / 2 > 0.0
     }
 
     private func buildDefaultImageView() -> UIImageView {
@@ -224,3 +248,49 @@ public class APKenBurnsView: UIView {
 //    let timeSincePause: CFTimeInterval = layer.convertTime(CACurrentMediaTime(), fromLayer: nil) - pausedTime
 //    layer.beginTime = timeSincePause
 //}
+
+
+struct RunningTimer: CustomStringConvertible {
+    var begin: CFAbsoluteTime
+    var end: CFAbsoluteTime
+
+    init() {
+        begin = CFAbsoluteTimeGetCurrent()
+        end = 0
+    }
+
+    mutating func start() {
+        begin = CFAbsoluteTimeGetCurrent()
+        end = 0
+    }
+
+    mutating func stop() -> Double {
+        if (end == 0) {
+            end = CFAbsoluteTimeGetCurrent()
+        }
+        return Double(end - begin)
+    }
+    var duration: CFAbsoluteTime {
+        get {
+            if (end == 0) {
+                return CFAbsoluteTimeGetCurrent() - begin
+            } else {
+                return end - begin
+            }
+        }
+    }
+    var description: String {
+        let time = duration
+        if (time > 100) {
+            return " \(time / 60) min"
+        } else if (time < 1e-6) {
+            return " \(time * 1e9) ns"
+        } else if (time < 1e-3) {
+            return " \(time * 1e6) µs"
+        } else if (time < 1) {
+            return " \(time * 1000) ms"
+        } else {
+            return " \(time) s"
+        }
+    }
+}

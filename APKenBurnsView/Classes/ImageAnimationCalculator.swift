@@ -8,6 +8,7 @@ import Foundation
 protocol ImageAnimationCalculatorProtocol {
     func buildPinnedToEdgesPosition(imageSize imageSize: CGSize, viewPortSize: CGSize) -> CGPoint
     func buildOppositeAnglePosition(startPosition startPosition: CGPoint, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint
+    func buildFacePosition(faceRect faceRect: CGRect, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint
     func buildAnimationDuration() -> Double
     func buildRandomScale(imageSize imageSize: CGSize, viewPortSize: CGSize) -> CGFloat
 }
@@ -71,6 +72,36 @@ class ImageAnimationCalculator: ImageAnimationCalculatorProtocol {
         let imageEndPosition = CGPointMake(imagePositionX, imagePositionY)
 
         return imageEndPosition
+    }
+
+    func buildFacePosition(faceRect faceRect: CGRect, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint {
+        let imageCenter = CGPointMake(viewPortSize.width / 2, viewPortSize.height / 2)
+        let imageFrame = CGRect(center: imageCenter, size: imageSize)
+
+        let centerOfFaceRect = faceRect.center()
+
+        let topCompensation = centerOfFaceRect.y - viewPortSize.height / 2
+        let bottomCompensation = imageFrame.size.height - (centerOfFaceRect.y + viewPortSize.height / 2)
+        var yCompensation: CGFloat = 0.0
+        if topCompensation < 0.0 {
+            yCompensation = -topCompensation
+        } else if bottomCompensation < 0.0 {
+            yCompensation = bottomCompensation
+        }
+
+        let leftCompensation = centerOfFaceRect.x - viewPortSize.width / 2
+        let rightCompensation = imageFrame.size.width - (centerOfFaceRect.x + viewPortSize.width / 2)
+        var xCompensation: CGFloat = 0.0
+        if leftCompensation < 0.0 {
+            xCompensation = -leftCompensation
+        } else if rightCompensation < 0.0 {
+            xCompensation = rightCompensation
+        }
+
+        let positionX = -(centerOfFaceRect.x - viewPortSize.width / 2 + imageFrame.origin.x + xCompensation)
+        let positionY = -(centerOfFaceRect.y - viewPortSize.height / 2 + imageFrame.origin.y + yCompensation)
+        let position = CGPointMake(positionX, positionY)
+        return position
     }
 
     func buildAnimationDuration() -> Double {
