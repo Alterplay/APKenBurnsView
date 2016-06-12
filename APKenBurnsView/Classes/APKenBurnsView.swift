@@ -17,7 +17,8 @@ public protocol APKenBurnsViewDelegate: class {
 
 public enum APKenBurnsViewFaceRecognitionMode {
     case None
-    case BiggestFace
+    case Biggest
+    case Group
 }
 
 

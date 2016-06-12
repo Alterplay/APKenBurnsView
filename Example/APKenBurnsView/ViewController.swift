@@ -22,7 +22,7 @@ class ViewController: UIViewController {
 
         kenBurnsView.dataSource = self
 //        kenBurnsView.showFaceRectangles = true
-        kenBurnsView.faceRecognitionMode = .BiggestFace
+        kenBurnsView.faceRecognitionMode = .Group
 
 
 

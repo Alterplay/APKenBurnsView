@@ -29,13 +29,14 @@ class AnimationDataSourceFactory: AnimationDataSourceFactoryProtocol {
     // MARK: - Public
 
     func buildAnimationDataSource() -> AnimationDataSource {
-        switch faceRecognitionMode {
-            case .None:
-                return DefaultAnimationDataSource(animationDependencies: animationDependencies)
-            case .BiggestFace:
-                let backupAnimationDataSource = DefaultAnimationDataSource(animationDependencies: animationDependencies)
-                return BiggestFaceAnimationDataSource(animationDependencies: animationDependencies,
-                                                      backupAnimationDataSource: backupAnimationDataSource)
+        if faceRecognitionMode == .None {
+            return DefaultAnimationDataSource(animationDependencies: animationDependencies)
+        } else {
+            let mode = FaceRecognitionMode(mode: faceRecognitionMode)
+            let backupAnimationDataSource = DefaultAnimationDataSource(animationDependencies: animationDependencies)
+            return FaceAnimationDataSource(faceRecognitionMode: mode,
+                                           animationDependencies: animationDependencies,
+                                           backupAnimationDataSource: backupAnimationDataSource)
         }
     }
 }

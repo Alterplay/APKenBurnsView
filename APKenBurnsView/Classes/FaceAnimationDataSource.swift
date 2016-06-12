@@ -6,30 +6,56 @@ import Foundation
 import UIKit
 import QuartzCore
 
-class BiggestFaceAnimationDataSource: AnimationDataSource {
+enum FaceRecognitionMode {
+    case Biggest
+    case Group
+
+    init(mode: APKenBurnsViewFaceRecognitionMode) {
+        switch mode {
+            case .None:
+                fatalError("Unsupported mode!")
+            case .Biggest:
+                self = .Biggest
+            case .Group:
+                self = .Group
+        }
+    }
+}
+
+
+class FaceAnimationDataSource: AnimationDataSource {
 
     // MARK: - Variables
 
     let animationCalculator: ImageAnimationCalculatorProtocol
-    let backupAnimationDataSource: AnimationDataSource
+
     // will be used for animation if no faces found
+    let backupAnimationDataSource: AnimationDataSource
+
+    let faceRecognitionMode: FaceRecognitionMode
 
     // MARK: - Init
 
-    init(animationCalculator: ImageAnimationCalculatorProtocol, backupAnimationDataSource: AnimationDataSource) {
+    init(faceRecognitionMode: FaceRecognitionMode,
+            animationCalculator: ImageAnimationCalculatorProtocol,
+            backupAnimationDataSource: AnimationDataSource) {
+        self.faceRecognitionMode = faceRecognitionMode
         self.animationCalculator = animationCalculator
         self.backupAnimationDataSource = backupAnimationDataSource
     }
 
-    convenience init(animationDependencies: ImageAnimationDependencies, backupAnimationDataSource: AnimationDataSource) {
-        self.init(animationCalculator: ImageAnimationCalculator(animationDependencies: animationDependencies),
+    convenience init(faceRecognitionMode: FaceRecognitionMode,
+            animationDependencies: ImageAnimationDependencies,
+            backupAnimationDataSource: AnimationDataSource) {
+        self.init(faceRecognitionMode: faceRecognitionMode,
+                  animationCalculator: ImageAnimationCalculator(animationDependencies: animationDependencies),
                   backupAnimationDataSource: backupAnimationDataSource)
     }
 
     // MARK: - Public
 
     func buildAnimationForImage(image: UIImage, forViewPortSize viewPortSize: CGSize) -> ImageAnimation {
-        guard let biggestFaceRect = image.biggestFaceRect() else {
+        guard let faceRect = findFaceRect(image) else {
             return backupAnimationDataSource.buildAnimationForImage(image, forViewPortSize: viewPortSize)
         }
 
@@ -45,7 +71,7 @@ class BiggestFaceAnimationDataSource: AnimationDataSource {
 
         var imageStartPosition: CGPoint = CGPointZero
         if startFromFace {
-            let faceRectScaled = CGRectApplyAffineTransform(biggestFaceRect, CGAffineTransformMakeScale(startScale, startScale))
+            let faceRectScaled = CGRectApplyAffineTransform(faceRect, CGAffineTransformMakeScale(startScale, startScale))
             imageStartPosition = animationCalculator.buildFacePosition(faceRect: faceRectScaled,
                                                                        imageSize: scaledStartImageSize,
                                                                        viewPortSize: viewPortSize)
@@ -57,7 +83,7 @@ class BiggestFaceAnimationDataSource: AnimationDataSource {
 
         var imageEndPosition: CGPoint = CGPointZero
         if !startFromFace {
-            let faceRectScaled = CGRectApplyAffineTransform(biggestFaceRect, CGAffineTransformMakeScale(endScale, endScale))
+            let faceRectScaled = CGRectApplyAffineTransform(faceRect, CGAffineTransformMakeScale(endScale, endScale))
             imageEndPosition = animationCalculator.buildFacePosition(faceRect: faceRectScaled,
                                                                      imageSize: scaledEndImageSize,
                                                                      viewPortSize: viewPortSize)
@@ -74,5 +100,16 @@ class BiggestFaceAnimationDataSource: AnimationDataSource {
         let imageTransition = ImageAnimation(startState: imageStartState, endState: imageEndState, duration: duration)
 
         return imageTransition
+    }
+
+    // MARK: - Private
+
+    private func findFaceRect(image: UIImage) -> CGRect? {
+        switch faceRecognitionMode {
+            case .Group:
+                return image.groupFacesRect()
+            case .Biggest:
+                return image.biggestFaceRect()
+        }
     }
 }
