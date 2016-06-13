@@ -5,24 +5,38 @@
 import Foundation
 
 class BlockTimer {
+
+    // MARK: - Private Variables
+
     private let repeats: Bool
     private var timer: NSTimer?
-    private var callback: (() -> ())?   // callback is retained, but cancel() will drop it and therefore break retain cycle
+    private var callback: (() -> ())? // callback is retained, but cancel() will drop it and therefore break retain cycle
+    private var timeLeftToFire: NSTimeInterval?
+
+    // MARK: - Init
 
     init(interval: NSTimeInterval, repeats: Bool = false, callback: () -> ()) {
         self.repeats = repeats
         self.callback = callback
 
-        let newTimer = NSTimer(timeInterval: interval,
-                               target: self,
-                               selector: "timerFired:",
-                               userInfo: nil,
-                               repeats: repeats)
+        timer = buildTimerAndScheduleWithTimeInterval(interval, repeats: repeats)
+    }
 
-        timer = newTimer
+    // MARK: - Public
 
-        // Run timer in 'NSRunLoopCommonModes' to make it fire during scrolling
-        NSRunLoop.mainRunLoop().addTimer(newTimer, forMode: NSRunLoopCommonModes)
+    func pause() {
+        timeLeftToFire = timer?.fireDate.timeIntervalSinceNow
+
+        timer?.invalidate()
+        timer = nil
+    }
+
+    func resume() {
+        guard timeLeftToFire != nil else {
+            return
+        }
+
+        timer = buildTimerAndScheduleWithTimeInterval(timeLeftToFire!, repeats: repeats)
     }
 
     func cancel() {
@@ -37,5 +51,19 @@ class BlockTimer {
         if !repeats {
             cancel()
         }
+    }
+
+    // MARK: - Private
+
+    private func buildTimerAndScheduleWithTimeInterval(timeInterval: NSTimeInterval, repeats: Bool) -> NSTimer {
+        let timer = NSTimer(timeInterval: timeInterval,
+                            target: self,
+                            selector: "timerFired:",
+                            userInfo: nil,
+                            repeats: repeats)
+
+        NSRunLoop.mainRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
+
+        return timer
     }
 }

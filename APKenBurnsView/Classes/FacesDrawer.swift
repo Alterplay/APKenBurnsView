@@ -7,7 +7,6 @@ import UIKit
 
 protocol FacesDrawerProtocol {
     func drawFacesInView(view: UIView, image: UIImage)
-
     func cleanUpForView(view: UIView)
 }
 
@@ -21,32 +20,36 @@ class FacesDrawer: FacesDrawerProtocol {
 
     // MARK: - Private Variables
 
-//    private var facesViews = [UIView]()
-    private var facesViews = [Int : [UIView]]()
+    private var facesViews = [Int: [UIView]]()
 
     // MARK: - Public
 
     func drawFacesInView(view: UIView, image: UIImage) {
         cleanUpForView(view)
 
-        let allFacesRects = image.allFacesRects()
-        guard allFacesRects.count > 0 else {
-            return
-        }
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            let allFacesRects = image.allFacesRects()
 
-        facesViews[view.hashValue] = []
+            dispatch_async(dispatch_get_main_queue()) {
+                guard allFacesRects.count > 0 else {
+                    return
+                }
 
-        let viewPortSize = view.bounds
-        let imageCenter = CGPointMake(viewPortSize.size.width / 2, viewPortSize.size.height / 2)
-        let imageFrame = CGRect(center: imageCenter, size: image.size)
+                self.facesViews[view.hashValue] = []
 
-        for faceRect in allFacesRects {
-            let faceRectConverted = convertFaceRect(faceRect, inImageCoordinates: imageFrame.origin)
+                let viewPortSize = view.bounds
+                let imageCenter = CGPointMake(viewPortSize.size.width / 2, viewPortSize.size.height / 2)
+                let imageFrame = CGRect(center: imageCenter, size: image.size)
 
-            let faceView = buildFaceViewWithFrame(faceRectConverted)
-            facesViews[view.hashValue]!.append(faceView)
+                for faceRect in allFacesRects {
+                    let faceRectConverted = self.convertFaceRect(faceRect, inImageCoordinates: imageFrame.origin)
 
-            view.addSubview(faceView)
+                    let faceView = self.buildFaceViewWithFrame(faceRectConverted)
+                    self.facesViews[view.hashValue]!.append(faceView)
+
+                    view.addSubview(faceView)
+                }
+            }
         }
     }
 

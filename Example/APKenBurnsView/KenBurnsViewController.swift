@@ -35,9 +35,9 @@ class KenBurnsViewController: UIViewController {
 //        kenBurnsView.showFaceRectangles = true
         kenBurnsView.faceRecognitionMode = faceRecoginitionMode
 
-
-
-//        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(3.0 * Double(NSEC_PER_SEC)))
+//
+//
+//        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(5.0 * Double(NSEC_PER_SEC)))
 //        dispatch_after(delayTime, dispatch_get_main_queue()) {
 //            let viewController = UIViewController()
 //
@@ -55,15 +55,15 @@ class KenBurnsViewController: UIViewController {
 
         self.kenBurnsView.startAnimations()
 
-//        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(1.0 * Double(NSEC_PER_SEC)))
-//        dispatch_after(delayTime, dispatch_get_main_queue()) {
-//            self.kenBurnsView.pauseAnimations()
-//        }
-//
-//        let delayTime2 = dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Double(NSEC_PER_SEC)))
-//        dispatch_after(delayTime2, dispatch_get_main_queue()) {
-//            self.kenBurnsView.resumeAnimations()
-//        }
+        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Double(NSEC_PER_SEC)))
+        dispatch_after(delayTime, dispatch_get_main_queue()) {
+            self.kenBurnsView.pauseAnimations()
+        }
+
+        let delayTime2 = dispatch_time(DISPATCH_TIME_NOW, Int64(4.0 * Double(NSEC_PER_SEC)))
+        dispatch_after(delayTime2, dispatch_get_main_queue()) {
+            self.kenBurnsView.resumeAnimations()
+        }
     }
 }
 

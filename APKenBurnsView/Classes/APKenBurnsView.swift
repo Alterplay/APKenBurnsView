@@ -31,12 +31,12 @@ public class APKenBurnsView: UIView {
     // MARK: - Animation Setup
     public var faceRecognitionMode: APKenBurnsViewFaceRecognitionMode = .None
 
-    public var scaleFactorDeviation: Float = 0.5
+    public var scaleFactorDeviation: Float = 1.0
 
-    public var imageAnimationDuration: Double = 6.0
+    public var imageAnimationDuration: Double = 10.0
     public var imageAnimationDurationDeviation: Double = 0.0
 
-    public var transitionAnimationDuration: Double = 2.0
+    public var transitionAnimationDuration: Double = 4.0
     public var transitionAnimationDurationDeviation: Double = 0.0
 
     public var showFaceRectangles: Bool = false
@@ -49,7 +49,14 @@ public class APKenBurnsView: UIView {
     private var animationDataSource: AnimationDataSource!
     private var facesDrawer: FacesDrawerProtocol!
 
+    private let notificationCenter = NSNotificationCenter.defaultCenter()
+
     private var timer: BlockTimer?
+    private var animations: [CAAnimation]?
+
+
+    private var firstImageViewAnimations: [String:CAAnimation]?
+    private var secondImageViewAnimations: [String:CAAnimation]?
 
     // MARK: - Init
 
@@ -76,33 +83,80 @@ public class APKenBurnsView: UIView {
     public override func didMoveToSuperview() {
         // required to break timer retain cycle
         guard superview == nil else {
+            notificationCenter.addObserver(self,
+                                           selector: #selector(applicationWillResignActive),
+                                           name: UIApplicationWillResignActiveNotification,
+                                           object: nil)
+            notificationCenter.addObserver(self,
+                                           selector: #selector(applicationDidBecomeActive),
+                                           name: UIApplicationDidBecomeActiveNotification,
+                                           object: nil)
             return
         }
-        stopTimer()   // TODO consider call of stopAnimations() ??
+        notificationCenter.removeObserver(self)
+        stopAnimations()
+    }
+
+    deinit {
+        notificationCenter.removeObserver(self)
     }
 
     // MARK: - Public
 
     public func startAnimations() {
+        stopAnimations()
+
         animationDataSource = buildAnimationDataSource()
 
-        startAnimating()
+        firstImageView.alpha = 1.0
+        secondImageView.alpha = 0.0
+
+        runningTimer = RunningTimer()
+
+        let image = dataSource?.nextImageForKenBurnsView(self)
+        startTransitionWithImage(image!, imageView: firstImageView, nextImageView: secondImageView)
     }
 
     public func pauseAnimations() {
-//        pauseLayer(firstImageView.layer)
-//        pauseLayer(secondImageView.layer)
+        firstImageViewAnimations = currentAnimationsOnLayer(firstImageView.layer)
+        secondImageViewAnimations = currentAnimationsOnLayer(secondImageView.layer)
+
+        timer?.pause()
+        layer.pauseAnimations()
     }
 
     public func resumeAnimations() {
-//        resumeLayer(firstImageView.layer)
-//        resumeLayer(secondImageView.layer)
+
+        if firstImageViewAnimations != nil {
+            firstImageView.layer.removeAllAnimations()
+            restoreAnimationsOnLayer(firstImageView.layer, animations: firstImageViewAnimations!)
+            firstImageViewAnimations = nil
+        }
+
+        if secondImageViewAnimations != nil {
+            secondImageView.layer.removeAllAnimations()
+            restoreAnimationsOnLayer(secondImageView.layer, animations: secondImageViewAnimations!)
+            secondImageViewAnimations = nil
+        }
+
+        timer?.resume()
+        layer.resumeAnimations()
     }
 
     public func stopAnimations() {
+        timer?.cancel()
+        layer.removeAllAnimations()
     }
 
+    // MARK: - Notifications
 
+    func applicationWillResignActive(notification: NSNotification) {
+        pauseAnimations()
+    }
+
+    func applicationDidBecomeActive(notification: NSNotification) {
+        resumeAnimations()
+    }
 
     // MARK: - Timer
 
@@ -127,16 +181,6 @@ public class APKenBurnsView: UIView {
         return animationDataSourceFactory.buildAnimationDataSource()
     }
 
-    private func startAnimating() {
-        firstImageView.alpha = 1.0
-        secondImageView.alpha = 0.0
-
-        runningTimer = RunningTimer()
-
-        let image = dataSource?.nextImageForKenBurnsView(self)
-        startTransitionWithImage(image!, imageView: firstImageView, nextImageView: secondImageView)
-    }
-
     var runningTimer: RunningTimer!
 
     private func startTransitionWithImage(image: UIImage, imageView: UIImageView, nextImageView: UIImageView) {
@@ -153,7 +197,7 @@ public class APKenBurnsView: UIView {
 
                 let endTime = self.runningTimer.duration
                 let animationTimeCompensation = endTime - startTime
-//                print(animationTimeCompensation)
+                print(animationTimeCompensation)
 
                 animation = ImageAnimation(startState: animation.startState, endState: animation.endState, duration: animation.duration - animationTimeCompensation)
 
@@ -183,6 +227,8 @@ public class APKenBurnsView: UIView {
                                                completion: {
                                                    finished in
 
+                                                   print("end of transition - \(self.runningTimer)")
+
                                                    self.facesDrawer.cleanUpForView(imageView)
                                                })
 
@@ -190,6 +236,8 @@ public class APKenBurnsView: UIView {
                     if nextImage == nil {
                         nextImage = image
                     }
+
+                    print("start of transition and next animation - \(self.runningTimer)")
 
                     self.startTransitionWithImage(nextImage!, imageView: nextImageView, nextImageView: imageView)
                 }
@@ -210,24 +258,29 @@ public class APKenBurnsView: UIView {
 
         return imageView
     }
+
+    private func currentAnimationsOnLayer(layer: CALayer) -> [String:CAAnimation] {
+        let animationKeys = layer.animationKeys()
+
+        if animationKeys != nil && animationKeys!.count > 0 {
+            var currentAnimations = [String: CAAnimation]()
+            for key in animationKeys! {
+                let animation = layer.animationForKey(key)!.copy() as! CAAnimation
+                currentAnimations[key] = animation
+            }
+            return currentAnimations
+        }
+        return [:]
+    }
+
+    private func restoreAnimationsOnLayer(layer: CALayer, animations: [String:CAAnimation]) {
+        for (key, value) in animations {
+            layer.addAnimation(value, forKey: key)
+        }
+    }
 }
 
 
-// TODO
-//private func pauseLayer(layer: CALayer) {
-//    let pausedTime: CFTimeInterval = layer.convertTime(CACurrentMediaTime(), fromLayer: nil)
-//    layer.speed = 0.0
-//    layer.timeOffset = pausedTime
-//}
-//
-//private func resumeLayer(layer: CALayer) {
-//    let pausedTime: CFTimeInterval = layer.timeOffset
-//    layer.speed = 1.0
-//    layer.timeOffset = 0.0
-//    layer.beginTime = 0.0
-//    let timeSincePause: CFTimeInterval = layer.convertTime(CACurrentMediaTime(), fromLayer: nil) - pausedTime
-//    layer.beginTime = timeSincePause
-//}
 
 
 struct RunningTimer: CustomStringConvertible {
