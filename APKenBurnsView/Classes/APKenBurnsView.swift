@@ -12,7 +12,8 @@ public protocol APKenBurnsViewDataSource: class {
 
 
 public protocol APKenBurnsViewDelegate: class {
-
+    func kenBurnsViewDidStartTransition(kenBurnsView: APKenBurnsView, toImage: UIImage)
+    func kenBurnsViewDidFinishTransition(kenBurnsView: APKenBurnsView)
 }
 
 public enum APKenBurnsViewFaceRecognitionMode {
@@ -24,8 +25,12 @@ public enum APKenBurnsViewFaceRecognitionMode {
 
 public class APKenBurnsView: UIView {
 
-    // MARK: -
+    // MARK: - DataSource
+
     public weak var dataSource: APKenBurnsViewDataSource?
+
+    // MARK: - Delegate
+
     public weak var delegate: APKenBurnsViewDelegate?
 
     // MARK: - Animation Setup
@@ -43,8 +48,8 @@ public class APKenBurnsView: UIView {
 
     // MARK: - Private Variables
 
-    var firstImageView: UIImageView!
-    var secondImageView: UIImageView!
+    private var firstImageView: UIImageView!
+    private var secondImageView: UIImageView!
 
     private var animationDataSource: AnimationDataSource!
     private var facesDrawer: FacesDrawerProtocol!
@@ -52,11 +57,7 @@ public class APKenBurnsView: UIView {
     private let notificationCenter = NSNotificationCenter.defaultCenter()
 
     private var timer: BlockTimer?
-    private var animations: [CAAnimation]?
-    private var runningTimer: RunningTimer!
-
-//    private var firstImageViewAnimations: [String:CAAnimation]?
-//    private var secondImageViewAnimations: [String:CAAnimation]?
+    private var stopWatch: StopWatch!
 
     // MARK: - Init
 
@@ -81,7 +82,6 @@ public class APKenBurnsView: UIView {
     // MARK: - Lifecycle
 
     public override func didMoveToSuperview() {
-        // required to break timer retain cycle
         guard superview == nil else {
             notificationCenter.addObserver(self,
                                            selector: #selector(applicationWillResignActive),
@@ -94,6 +94,8 @@ public class APKenBurnsView: UIView {
             return
         }
         notificationCenter.removeObserver(self)
+
+        // required to break timer retain cycle
         stopAnimations()
     }
 
@@ -111,7 +113,7 @@ public class APKenBurnsView: UIView {
         firstImageView.alpha = 1.0
         secondImageView.alpha = 0.0
 
-        runningTimer = RunningTimer()
+        stopWatch = StopWatch()
 
         let image = dataSource?.nextImageForKenBurnsView(self)
         startTransitionWithImage(image!, imageView: firstImageView, nextImageView: secondImageView)
@@ -178,16 +180,16 @@ public class APKenBurnsView: UIView {
         }
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            let startTime = self.runningTimer.duration
+            self.stopWatch.start()
 
             var animation = self.animationDataSource.buildAnimationForImage(image, forViewPortSize: self.bounds.size)
 
             dispatch_async(dispatch_get_main_queue()) {
 
-                let endTime = self.runningTimer.duration
-                let animationTimeCompensation = endTime - startTime
-
-                animation = ImageAnimation(startState: animation.startState, endState: animation.endState, duration: animation.duration - animationTimeCompensation)
+                let animationTimeCompensation = self.stopWatch.duration
+                animation = ImageAnimation(startState: animation.startState,
+                                           endState: animation.endState,
+                                           duration: animation.duration - animationTimeCompensation)
 
                 imageView.image = image
                 imageView.animateWithImageAnimation(animation)
@@ -196,26 +198,17 @@ public class APKenBurnsView: UIView {
                     self.facesDrawer.drawFacesInView(imageView, image: image)
                 }
 
-                var durationDeviation = 0.0
-                if (self.transitionAnimationDurationDeviation > 0.0) {
-                    durationDeviation = Double.random(min: -self.transitionAnimationDurationDeviation, max: self.transitionAnimationDurationDeviation)
-                }
-                let duration = self.transitionAnimationDuration + durationDeviation
+                let duration = self.buildAnimationDuration()
                 let delay = animation.duration - duration / 2
 
                 self.startTimerWithDelay(delay) {
-                    UIView.animateWithDuration(duration,
-                                               delay: 0.0,
-                                               options: UIViewAnimationOptions.CurveEaseInOut,
-                                               animations: {
-                                                   imageView.alpha = 0.0
-                                                   nextImageView.alpha = 1.0
-                                               },
-                                               completion: {
-                                                   finished in
 
-                                                   self.facesDrawer.cleanUpForView(imageView)
-                                               })
+                    self.delegate?.kenBurnsViewDidStartTransition(self, toImage: image)
+
+                    self.animateTransitionWithDuration(duration, imageView: imageView, nextImageView: nextImageView) {
+                        self.delegate?.kenBurnsViewDidFinishTransition(self)
+                        self.facesDrawer.cleanUpForView(imageView)
+                    }
 
                     var nextImage = self.dataSource?.nextImageForKenBurnsView(self)
                     if nextImage == nil {
@@ -226,6 +219,31 @@ public class APKenBurnsView: UIView {
                 }
             }
         }
+    }
+
+    private func animateTransitionWithDuration(duration: Double, imageView: UIImageView, nextImageView: UIImageView, completion: () -> ()) {
+        UIView.animateWithDuration(duration,
+                                   delay: 0.0,
+                                   options: UIViewAnimationOptions.CurveEaseInOut,
+                                   animations: {
+                                       imageView.alpha = 0.0
+                                       nextImageView.alpha = 1.0
+                                   },
+                                   completion: {
+                                       finished in
+
+                                       completion()
+                                   })
+    }
+
+    private func buildAnimationDuration() -> Double {
+        var durationDeviation = 0.0
+        if transitionAnimationDurationDeviation > 0.0 {
+            durationDeviation = RandomGenerator().randomDouble(min: -transitionAnimationDurationDeviation,
+                                                               max: transitionAnimationDurationDeviation)
+        }
+        let duration = transitionAnimationDuration + durationDeviation
+        return duration
     }
 
     private func isValidAnimationDurations() -> Bool {
@@ -240,52 +258,5 @@ public class APKenBurnsView: UIView {
         self.addSubview(imageView)
 
         return imageView
-    }
-}
-
-
-
-struct RunningTimer: CustomStringConvertible {
-    var begin: CFAbsoluteTime
-    var end: CFAbsoluteTime
-
-    init() {
-        begin = CFAbsoluteTimeGetCurrent()
-        end = 0
-    }
-
-    mutating func start() {
-        begin = CFAbsoluteTimeGetCurrent()
-        end = 0
-    }
-
-    mutating func stop() -> Double {
-        if (end == 0) {
-            end = CFAbsoluteTimeGetCurrent()
-        }
-        return Double(end - begin)
-    }
-    var duration: CFAbsoluteTime {
-        get {
-            if (end == 0) {
-                return CFAbsoluteTimeGetCurrent() - begin
-            } else {
-                return end - begin
-            }
-        }
-    }
-    var description: String {
-        let time = duration
-        if (time > 100) {
-            return " \(time / 60) min"
-        } else if (time < 1e-6) {
-            return " \(time * 1e9) ns"
-        } else if (time < 1e-3) {
-            return " \(time * 1e6) µs"
-        } else if (time < 1) {
-            return " \(time * 1000) ms"
-        } else {
-            return " \(time) s"
-        }
     }
 }

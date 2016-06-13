@@ -22,7 +22,7 @@ class KenBurnsViewController: UIViewController {
 
     // MARK: - Private Variables
 
-    var index: Int = 0
+    private var index: Int = 0
 
     // MARK: - Lifecycle
 
@@ -32,38 +32,13 @@ class KenBurnsViewController: UIViewController {
         navigationController!.navigationBarHidden = true
 
         kenBurnsView.dataSource = self
-//        kenBurnsView.showFaceRectangles = true
         kenBurnsView.faceRecognitionMode = faceRecoginitionMode
-
-//
-//
-//        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(5.0 * Double(NSEC_PER_SEC)))
-//        dispatch_after(delayTime, dispatch_get_main_queue()) {
-//            let viewController = UIViewController()
-//
-//            self.presentViewController(viewController, animated: true, completion: nil)
-//
-//            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Double(NSEC_PER_SEC)))
-//            dispatch_after(delayTime, dispatch_get_main_queue()) {
-//                viewController.dismissViewControllerAnimated(true, completion: nil)
-//            }
-//        }
     }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
         self.kenBurnsView.startAnimations()
-
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Double(NSEC_PER_SEC)))
-        dispatch_after(delayTime, dispatch_get_main_queue()) {
-            self.kenBurnsView.pauseAnimations()
-        }
-
-        let delayTime2 = dispatch_time(DISPATCH_TIME_NOW, Int64(4.0 * Double(NSEC_PER_SEC)))
-        dispatch_after(delayTime2, dispatch_get_main_queue()) {
-            self.kenBurnsView.resumeAnimations()
-        }
     }
 }
 

@@ -58,7 +58,7 @@ class BlockTimer {
     private func buildTimerAndScheduleWithTimeInterval(timeInterval: NSTimeInterval, repeats: Bool) -> NSTimer {
         let timer = NSTimer(timeInterval: timeInterval,
                             target: self,
-                            selector: "timerFired:",
+                            selector: #selector(timerFired),
                             userInfo: nil,
                             repeats: repeats)
 
