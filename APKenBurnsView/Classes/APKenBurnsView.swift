@@ -172,8 +172,6 @@ public class APKenBurnsView: UIView {
                 let duration = self.transitionAnimationDuration + durationDeviation
                 let delay = animation.duration - duration / 2
 
-
-
                 self.startTimerWithDelay(delay) {
                     UIView.animateWithDuration(duration,
                                                delay: 0.0,
@@ -206,28 +204,9 @@ public class APKenBurnsView: UIView {
 
     private func buildDefaultImageView() -> UIImageView {
         let imageView = UIImageView(frame: bounds)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
         imageView.contentMode = UIViewContentMode.Center
         self.addSubview(imageView)
-
-        let views = [
-                "imageView": imageView,
-                "containerView": self,
-        ]
-
-        let vertical = NSLayoutConstraint.constraintsWithVisualFormat(
-        "V:|[imageView]|",
-        options: [],
-        metrics: nil,
-        views: views)
-
-        let horizontal = NSLayoutConstraint.constraintsWithVisualFormat(
-        "H:|[imageView]|",
-        options: [],
-        metrics: nil,
-        views: views)
-
-        NSLayoutConstraint.activateConstraints(vertical + horizontal)
 
         return imageView
     }
