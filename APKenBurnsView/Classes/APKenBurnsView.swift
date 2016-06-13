@@ -6,20 +6,34 @@ import Foundation
 import UIKit
 import QuartzCore
 
+
 public protocol APKenBurnsViewDataSource: class {
+    /*
+        Main data source method. Data source should provide next image.
+        If no image provided (data source returns nil) then previous image will be used one more time.
+    */
     func nextImageForKenBurnsView(kenBurnsView: APKenBurnsView) -> UIImage?
 }
 
 
 public protocol APKenBurnsViewDelegate: class {
+
+    /*
+        Called when transition starts from one image to another
+    */
     func kenBurnsViewDidStartTransition(kenBurnsView: APKenBurnsView, toImage: UIImage)
+
+    /*
+        Called when transition from one image to another is finished
+    */
     func kenBurnsViewDidFinishTransition(kenBurnsView: APKenBurnsView)
 }
 
+
 public enum APKenBurnsViewFaceRecognitionMode {
-    case None
-    case Biggest
-    case Group
+    case None         // no faces recognition, simple ken burns effect
+    case Biggest      // recognizes biggest face on image, if any then transition will start or will finish (chosen randomly) in center of face rect.
+    case Group        // recognizes all faces on image, if any then transition will start or will finish (chosen randomly) in center of compound rect of all faces.
 }
 
 
@@ -29,35 +43,55 @@ public class APKenBurnsView: UIView {
 
     public weak var dataSource: APKenBurnsViewDataSource?
 
+
     // MARK: - Delegate
 
     public weak var delegate: APKenBurnsViewDelegate?
 
+
     // MARK: - Animation Setup
+
+    /*
+        Face recognition mode. See APKenBurnsViewFaceRecognitionMode docs for more information.
+    */
     public var faceRecognitionMode: APKenBurnsViewFaceRecognitionMode = .None
 
+    /*
+        Allowed deviation of scale factor.
+
+        Example: If scaleFactorDeviation = 0.5 then allowed scale will be from 1.0 to 1.5.
+        If scaleFactorDeviation = 0.0 then allowed scale will be from 1.0 to 1.0 - fixed scale factor.
+    */
     public var scaleFactorDeviation: Float = 1.0
 
+    /*
+        Animation duration of one image
+    */
     public var imageAnimationDuration: Double = 10.0
+
+    /*
+        Allowed deviation of animation duration of one image
+
+        Example: if imageAnimationDuration = 10 seconds and imageAnimationDurationDeviation = 2 seconds then
+        resulting image animation duration will be from 8 to 12 seconds
+    */
     public var imageAnimationDurationDeviation: Double = 0.0
 
+    /*
+        Duration of transition animation between images
+    */
     public var transitionAnimationDuration: Double = 4.0
+
+    /*
+        Allowed deviation of animation duration of one image
+    */
     public var transitionAnimationDurationDeviation: Double = 0.0
 
+    /*
+        If set to true then recognized faces will be shown as rectangles. Only applicable for debugging.
+    */
     public var showFaceRectangles: Bool = false
 
-    // MARK: - Private Variables
-
-    private var firstImageView: UIImageView!
-    private var secondImageView: UIImageView!
-
-    private var animationDataSource: AnimationDataSource!
-    private var facesDrawer: FacesDrawerProtocol!
-
-    private let notificationCenter = NSNotificationCenter.defaultCenter()
-
-    private var timer: BlockTimer?
-    private var stopWatch: StopWatch!
 
     // MARK: - Init
 
@@ -71,37 +105,6 @@ public class APKenBurnsView: UIView {
         setup()
     }
 
-    // MARK: - Setup
-
-    private func setup() {
-        firstImageView = buildDefaultImageView()
-        secondImageView = buildDefaultImageView()
-        facesDrawer = FacesDrawer()
-    }
-
-    // MARK: - Lifecycle
-
-    public override func didMoveToSuperview() {
-        guard superview == nil else {
-            notificationCenter.addObserver(self,
-                                           selector: #selector(applicationWillResignActive),
-                                           name: UIApplicationWillResignActiveNotification,
-                                           object: nil)
-            notificationCenter.addObserver(self,
-                                           selector: #selector(applicationDidBecomeActive),
-                                           name: UIApplicationDidBecomeActiveNotification,
-                                           object: nil)
-            return
-        }
-        notificationCenter.removeObserver(self)
-
-        // required to break timer retain cycle
-        stopAnimations()
-    }
-
-    deinit {
-        notificationCenter.removeObserver(self)
-    }
 
     // MARK: - Public
 
@@ -140,27 +143,78 @@ public class APKenBurnsView: UIView {
         layer.removeAllAnimations()
     }
 
+
+    // MARK: - Private Variables
+
+    private var firstImageView: UIImageView!
+    private var secondImageView: UIImageView!
+
+    private var animationDataSource: AnimationDataSource!
+    private var facesDrawer: FacesDrawerProtocol!
+
+    private let notificationCenter = NSNotificationCenter.defaultCenter()
+
+    private var timer: BlockTimer?
+    private var stopWatch: StopWatch!
+
+
+    // MARK: - Setup
+
+    private func setup() {
+        firstImageView = buildDefaultImageView()
+        secondImageView = buildDefaultImageView()
+        facesDrawer = FacesDrawer()
+    }
+
+
+    // MARK: - Lifecycle
+
+    public override func didMoveToSuperview() {
+        guard superview == nil else {
+            notificationCenter.addObserver(self,
+                                           selector: #selector(applicationWillResignActive),
+                                           name: UIApplicationWillResignActiveNotification,
+                                           object: nil)
+            notificationCenter.addObserver(self,
+                                           selector: #selector(applicationDidBecomeActive),
+                                           name: UIApplicationDidBecomeActiveNotification,
+                                           object: nil)
+            return
+        }
+        notificationCenter.removeObserver(self)
+
+        // required to break timer retain cycle
+        stopAnimations()
+    }
+
+    deinit {
+        notificationCenter.removeObserver(self)
+    }
+
+
     // MARK: - Notifications
 
-    func applicationWillResignActive(notification: NSNotification) {
+    @objc private func applicationWillResignActive(notification: NSNotification) {
         pauseAnimations()
     }
 
-    func applicationDidBecomeActive(notification: NSNotification) {
+    @objc private func applicationDidBecomeActive(notification: NSNotification) {
         resumeAnimations()
     }
 
+
     // MARK: - Timer
 
-    func startTimerWithDelay(delay: Double, callback: () -> ()) {
+    private func startTimerWithDelay(delay: Double, callback: () -> ()) {
         stopTimer()
 
         timer = BlockTimer(interval: delay, callback: callback)
     }
 
-    func stopTimer() {
+    private func stopTimer() {
         timer?.cancel()
     }
+
 
     // MARK: - Private
 
@@ -172,7 +226,6 @@ public class APKenBurnsView: UIView {
                                                                     faceRecognitionMode: faceRecognitionMode)
         return animationDataSourceFactory.buildAnimationDataSource()
     }
-
 
     private func startTransitionWithImage(image: UIImage, imageView: UIImageView, nextImageView: UIImageView) {
         guard isValidAnimationDurations() else {
