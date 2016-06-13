@@ -53,10 +53,10 @@ public class APKenBurnsView: UIView {
 
     private var timer: BlockTimer?
     private var animations: [CAAnimation]?
+    private var runningTimer: RunningTimer!
 
-
-    private var firstImageViewAnimations: [String:CAAnimation]?
-    private var secondImageViewAnimations: [String:CAAnimation]?
+//    private var firstImageViewAnimations: [String:CAAnimation]?
+//    private var secondImageViewAnimations: [String:CAAnimation]?
 
     // MARK: - Init
 
@@ -118,26 +118,16 @@ public class APKenBurnsView: UIView {
     }
 
     public func pauseAnimations() {
-        firstImageViewAnimations = currentAnimationsOnLayer(firstImageView.layer)
-        secondImageViewAnimations = currentAnimationsOnLayer(secondImageView.layer)
+        firstImageView.backupAnimations()
+        secondImageView.backupAnimations()
 
         timer?.pause()
         layer.pauseAnimations()
     }
 
     public func resumeAnimations() {
-
-        if firstImageViewAnimations != nil {
-            firstImageView.layer.removeAllAnimations()
-            restoreAnimationsOnLayer(firstImageView.layer, animations: firstImageViewAnimations!)
-            firstImageViewAnimations = nil
-        }
-
-        if secondImageViewAnimations != nil {
-            secondImageView.layer.removeAllAnimations()
-            restoreAnimationsOnLayer(secondImageView.layer, animations: secondImageViewAnimations!)
-            secondImageViewAnimations = nil
-        }
+        firstImageView.restoreAnimations()
+        secondImageView.restoreAnimations()
 
         timer?.resume()
         layer.resumeAnimations()
@@ -181,7 +171,6 @@ public class APKenBurnsView: UIView {
         return animationDataSourceFactory.buildAnimationDataSource()
     }
 
-    var runningTimer: RunningTimer!
 
     private func startTransitionWithImage(image: UIImage, imageView: UIImageView, nextImageView: UIImageView) {
         guard isValidAnimationDurations() else {
@@ -197,10 +186,8 @@ public class APKenBurnsView: UIView {
 
                 let endTime = self.runningTimer.duration
                 let animationTimeCompensation = endTime - startTime
-                print(animationTimeCompensation)
 
                 animation = ImageAnimation(startState: animation.startState, endState: animation.endState, duration: animation.duration - animationTimeCompensation)
-
 
                 imageView.image = image
                 imageView.animateWithImageAnimation(animation)
@@ -227,8 +214,6 @@ public class APKenBurnsView: UIView {
                                                completion: {
                                                    finished in
 
-                                                   print("end of transition - \(self.runningTimer)")
-
                                                    self.facesDrawer.cleanUpForView(imageView)
                                                })
 
@@ -236,8 +221,6 @@ public class APKenBurnsView: UIView {
                     if nextImage == nil {
                         nextImage = image
                     }
-
-                    print("start of transition and next animation - \(self.runningTimer)")
 
                     self.startTransitionWithImage(nextImage!, imageView: nextImageView, nextImageView: imageView)
                 }
@@ -258,28 +241,7 @@ public class APKenBurnsView: UIView {
 
         return imageView
     }
-
-    private func currentAnimationsOnLayer(layer: CALayer) -> [String:CAAnimation] {
-        let animationKeys = layer.animationKeys()
-
-        if animationKeys != nil && animationKeys!.count > 0 {
-            var currentAnimations = [String: CAAnimation]()
-            for key in animationKeys! {
-                let animation = layer.animationForKey(key)!.copy() as! CAAnimation
-                currentAnimations[key] = animation
-            }
-            return currentAnimations
-        }
-        return [:]
-    }
-
-    private func restoreAnimationsOnLayer(layer: CALayer, animations: [String:CAAnimation]) {
-        for (key, value) in animations {
-            layer.addAnimation(value, forKey: key)
-        }
-    }
 }
-
 
 
 
