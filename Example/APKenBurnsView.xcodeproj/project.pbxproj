@@ -171,12 +171,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "APKenBurnsView_Example" */;
 			buildPhases = (
-				A31E85175C78C481031CA37B /* 📦 Check Pods Manifest.lock */,
+				A31E85175C78C481031CA37B /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
-				699133879FBF3FD99212A6D7 /* 📦 Embed Pods Frameworks */,
-				85AE8E4FA2B27698835CA0FD /* 📦 Copy Pods Resources */,
+				699133879FBF3FD99212A6D7 /* [CP] Embed Pods Frameworks */,
+				85AE8E4FA2B27698835CA0FD /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -191,12 +191,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "APKenBurnsView_Tests" */;
 			buildPhases = (
-				B7A468D47DE288F5076D794D /* 📦 Check Pods Manifest.lock */,
+				B7A468D47DE288F5076D794D /* [CP] Check Pods Manifest.lock */,
 				607FACE11AFB9204008FA782 /* Sources */,
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
-				17198FB326DD2964FD3A6EF2 /* 📦 Embed Pods Frameworks */,
-				6B83B81A47BEE35639B93D33 /* 📦 Copy Pods Resources */,
+				17198FB326DD2964FD3A6EF2 /* [CP] Embed Pods Frameworks */,
+				6B83B81A47BEE35639B93D33 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -267,14 +267,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		17198FB326DD2964FD3A6EF2 /* 📦 Embed Pods Frameworks */ = {
+		17198FB326DD2964FD3A6EF2 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -282,14 +282,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-APKenBurnsView_Tests/Pods-APKenBurnsView_Tests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		699133879FBF3FD99212A6D7 /* 📦 Embed Pods Frameworks */ = {
+		699133879FBF3FD99212A6D7 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -297,14 +297,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-APKenBurnsView_Example/Pods-APKenBurnsView_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		6B83B81A47BEE35639B93D33 /* 📦 Copy Pods Resources */ = {
+		6B83B81A47BEE35639B93D33 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -312,14 +312,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-APKenBurnsView_Tests/Pods-APKenBurnsView_Tests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		85AE8E4FA2B27698835CA0FD /* 📦 Copy Pods Resources */ = {
+		85AE8E4FA2B27698835CA0FD /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -327,14 +327,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-APKenBurnsView_Example/Pods-APKenBurnsView_Example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A31E85175C78C481031CA37B /* 📦 Check Pods Manifest.lock */ = {
+		A31E85175C78C481031CA37B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -342,14 +342,14 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		B7A468D47DE288F5076D794D /* 📦 Check Pods Manifest.lock */ = {
+		B7A468D47DE288F5076D794D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -504,6 +504,7 @@
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -521,6 +522,7 @@
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
