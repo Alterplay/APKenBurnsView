@@ -31,9 +31,9 @@ public protocol APKenBurnsViewDelegate: class {
 
 
 public enum APKenBurnsViewFaceRecognitionMode {
-    case None         // no faces recognition, simple ken burns effect
-    case Biggest      // recognizes biggest face on image, if any then transition will start or will finish (chosen randomly) in center of face rect.
-    case Group        // recognizes all faces on image, if any then transition will start or will finish (chosen randomly) in center of compound rect of all faces.
+    case None         // no face recognition, simple Ken Burns effect
+    case Biggest      // recognizes biggest face in image, if any then transition will start or will finish (chosen randomly) in center of face rect.
+    case Group        // recognizes all faces in image, if any then transition will start or will finish (chosen randomly) in center of compound rect of all faces.
 }
 
 
