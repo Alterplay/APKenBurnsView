@@ -2,6 +2,7 @@
 
 ![APKenBurnsView](/images/apkenburnsview_cover.png)
 
+[![Build Status](https://www.bitrise.io/app/226b97fe8ae35817.svg?token=tO-nUoKK1sFwQyoW9pkLcQ&branch=master)
 [![Version](https://img.shields.io/cocoapods/v/APKenBurnsView.svg?style=flat)](http://cocoapods.org/pods/APKenBurnsView)
 [![License](https://img.shields.io/cocoapods/l/APKenBurnsView.svg?style=flat)](http://cocoapods.org/pods/APKenBurnsView)
 [![Platform](https://img.shields.io/cocoapods/p/APKenBurnsView.svg?style=flat)](http://cocoapods.org/pods/APKenBurnsView)
