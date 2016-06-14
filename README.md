@@ -38,7 +38,7 @@ Just simple interface. Provide data source class for UIImage's, setup all timing
 Data source should be ready to provide next image at the moment when APKenBurnsView calls `func nextImageForKenBurnsView(kenBurnsView: APKenBurnsView) -> UIImage?`. If there is no UIImage ready (still loading from network, etc.) then data source should return `nil` and APKenBurnsView will animate last image one more time. If you are loading your images from network you should consider some preloading mechanism.
 
 Example of usage:
-```
+```swift
 class MyViewController: UIViewController {
     // MARK: - Outlets 
     @IBOutlet weak var kenBurnsView: APKenBurnsView!
