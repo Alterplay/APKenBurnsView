@@ -31,7 +31,6 @@ class KenBurnsViewController: UIViewController {
 
         navigationController!.navigationBarHidden = true
 
-        kenBurnsView.dataSource = self
         kenBurnsView.faceRecognitionMode = faceRecoginitionMode
     }
 

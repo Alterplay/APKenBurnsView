@@ -7,7 +7,7 @@ import UIKit
 import QuartzCore
 
 
-public protocol APKenBurnsViewDataSource: class {
+@objc public protocol APKenBurnsViewDataSource {
     /*
         Main data source method. Data source should provide next image.
         If no image provided (data source returns nil) then previous image will be used one more time.
@@ -16,17 +16,17 @@ public protocol APKenBurnsViewDataSource: class {
 }
 
 
-public protocol APKenBurnsViewDelegate: class {
+@objc public protocol APKenBurnsViewDelegate {
 
     /*
         Called when transition starts from one image to another
     */
-    func kenBurnsViewDidStartTransition(kenBurnsView: APKenBurnsView, toImage: UIImage)
+    optional func kenBurnsViewDidStartTransition(kenBurnsView: APKenBurnsView, toImage: UIImage)
 
     /*
         Called when transition from one image to another is finished
     */
-    func kenBurnsViewDidFinishTransition(kenBurnsView: APKenBurnsView)
+    optional func kenBurnsViewDidFinishTransition(kenBurnsView: APKenBurnsView)
 }
 
 
@@ -41,12 +41,20 @@ public class APKenBurnsView: UIView {
 
     // MARK: - DataSource
 
-    public weak var dataSource: APKenBurnsViewDataSource?
+    /*
+        NOTE: Interface Builder does not support connecting to an outlet in a Swift file when the outlet’s type is a protocol.
+        Workaround: Declare the outlet's type as AnyObject or NSObject, connect objects to the outlet using Interface Builder, then change the outlet's type back to the protocol.
+    */
+    @IBOutlet public weak var dataSource: APKenBurnsViewDataSource?
 
 
     // MARK: - Delegate
 
-    public weak var delegate: APKenBurnsViewDelegate?
+    /*
+        NOTE: Interface Builder does not support connecting to an outlet in a Swift file when the outlet’s type is a protocol.
+        Workaround: Declare the outlet's type as AnyObject or NSObject, connect objects to the outlet using Interface Builder, then change the outlet's type back to the protocol.
+    */
+    @IBOutlet public weak var delegate: APKenBurnsViewDelegate?
 
 
     // MARK: - Animation Setup
@@ -62,12 +70,12 @@ public class APKenBurnsView: UIView {
         Example: If scaleFactorDeviation = 0.5 then allowed scale will be from 1.0 to 1.5.
         If scaleFactorDeviation = 0.0 then allowed scale will be from 1.0 to 1.0 - fixed scale factor.
     */
-    public var scaleFactorDeviation: Float = 1.0
+    @IBInspectable public var scaleFactorDeviation: Float = 1.0
 
     /*
         Animation duration of one image
     */
-    public var imageAnimationDuration: Double = 10.0
+    @IBInspectable public var imageAnimationDuration: Double = 10.0
 
     /*
         Allowed deviation of animation duration of one image
@@ -75,22 +83,22 @@ public class APKenBurnsView: UIView {
         Example: if imageAnimationDuration = 10 seconds and imageAnimationDurationDeviation = 2 seconds then
         resulting image animation duration will be from 8 to 12 seconds
     */
-    public var imageAnimationDurationDeviation: Double = 0.0
+    @IBInspectable public var imageAnimationDurationDeviation: Double = 0.0
 
     /*
         Duration of transition animation between images
     */
-    public var transitionAnimationDuration: Double = 4.0
+    @IBInspectable public var transitionAnimationDuration: Double = 4.0
 
     /*
         Allowed deviation of animation duration of one image
     */
-    public var transitionAnimationDurationDeviation: Double = 0.0
+    @IBInspectable public var transitionAnimationDurationDeviation: Double = 0.0
 
     /*
         If set to true then recognized faces will be shown as rectangles. Only applicable for debugging.
     */
-    public var showFaceRectangles: Bool = false
+    @IBInspectable public var showFaceRectangles: Bool = false
 
 
     // MARK: - Init
@@ -256,10 +264,10 @@ public class APKenBurnsView: UIView {
 
                 self.startTimerWithDelay(delay) {
 
-                    self.delegate?.kenBurnsViewDidStartTransition(self, toImage: image)
+                    self.delegate?.kenBurnsViewDidStartTransition?(self, toImage: image)
 
                     self.animateTransitionWithDuration(duration, imageView: imageView, nextImageView: nextImageView) {
-                        self.delegate?.kenBurnsViewDidFinishTransition(self)
+                        self.delegate?.kenBurnsViewDidFinishTransition?(self)
                         self.facesDrawer.cleanUpForView(imageView)
                     }
 

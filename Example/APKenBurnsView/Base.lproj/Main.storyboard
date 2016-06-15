@@ -5,7 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
-        <!--Ken Burns View Controller-->
+        <!--Data Source-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="KenBurnsViewController" customModule="APKenBurnsView_Example" customModuleProvider="target" sceneMemberID="viewController">
@@ -17,22 +17,25 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ZC-FN-H9v" customClass="APKenBurnsView" customModule="APKenBurnsView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c2j-rf-YSu" customClass="APKenBurnsView" customModule="APKenBurnsView">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="vXZ-lx-hvc" id="yuu-jK-d5r"/>
+                                </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="1ZC-FN-H9v" secondAttribute="trailing" id="PVH-nR-K2d"/>
-                            <constraint firstItem="1ZC-FN-H9v" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="QtX-UZ-8DC"/>
-                            <constraint firstItem="1ZC-FN-H9v" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="mRU-Up-Ukd"/>
-                            <constraint firstItem="C9w-9A-ti0" firstAttribute="top" secondItem="1ZC-FN-H9v" secondAttribute="bottom" id="rrx-dE-tO9"/>
+                            <constraint firstItem="c2j-rf-YSu" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="6Y8-sx-VC5"/>
+                            <constraint firstItem="c2j-rf-YSu" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="BNs-Q6-Jzg"/>
+                            <constraint firstAttribute="trailing" secondItem="c2j-rf-YSu" secondAttribute="trailing" id="PrG-3j-qOh"/>
+                            <constraint firstItem="C9w-9A-ti0" firstAttribute="top" secondItem="c2j-rf-YSu" secondAttribute="bottom" id="ZAL-Gs-Dhf"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="7qG-gn-ciU"/>
                     <connections>
-                        <outlet property="kenBurnsView" destination="1ZC-FN-H9v" id="BAm-aq-L83"/>
+                        <outlet property="kenBurnsView" destination="c2j-rf-YSu" id="uBQ-1m-QGd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
@@ -54,14 +57,14 @@
                                         <rect key="frame" x="0.0" y="64" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qnL-4m-M0J" id="JrC-38-9Mj">
-                                            <rect key="frame" x="0.0" y="0.0" width="287" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="None" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="NN7-O3-naw">
-                                                    <rect key="frame" x="15" y="0.0" width="270" height="44"/>
+                                                    <rect key="frame" x="15" y="0.0" width="270" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -74,14 +77,14 @@
                                         <rect key="frame" x="0.0" y="108" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="T18-Tm-J28" id="owu-BJ-a0z">
-                                            <rect key="frame" x="0.0" y="0.0" width="287" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Biggest" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="jXr-iB-dcc">
-                                                    <rect key="frame" x="15" y="0.0" width="270" height="44"/>
+                                                    <rect key="frame" x="15" y="0.0" width="270" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -94,14 +97,14 @@
                                         <rect key="frame" x="0.0" y="152" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vDp-zl-py6" id="hZs-cU-9bh">
-                                            <rect key="frame" x="0.0" y="0.0" width="287" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Group" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="tcF-5a-SjB">
-                                                    <rect key="frame" x="15" y="0.0" width="270" height="44"/>
+                                                    <rect key="frame" x="15" y="0.0" width="270" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
