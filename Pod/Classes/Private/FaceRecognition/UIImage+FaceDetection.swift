@@ -30,11 +30,11 @@ extension UIImage {
 
         let faceBounds = biggestFaceUnwrapped.bounds
 
-        let scaledFaceRect = faceBounds.scaledRect(1 / scale)
-        let convertedFaceRect = CGRectMake(scaledFaceRect.origin.x,
-                                           size.height - scaledFaceRect.origin.y - scaledFaceRect.size.height,
-                                           scaledFaceRect.size.width,
-                                           scaledFaceRect.size.height)
+        let scaledFaceRect = faceBounds.scaledRect(scale: 1 / scale)
+        let convertedFaceRect = CGRect(x: scaledFaceRect.origin.x,
+                                       y: size.height - scaledFaceRect.origin.y - scaledFaceRect.size.height,
+                                       width:  scaledFaceRect.size.width,
+                                       height: scaledFaceRect.size.height)
         return convertedFaceRect
     }
 
@@ -46,26 +46,26 @@ extension UIImage {
         }
 
         let first = faces.first!
-        var topLeftPoint: CGPoint = CGPointMake(CGRectGetMinX(first), CGRectGetMinY(first))
-        var bottomRightPoint: CGPoint = CGPointMake(CGRectGetMaxX(first), CGRectGetMaxY(first))
+        var topLeftPoint: CGPoint = CGPoint(x: first.minX, y: first.minY)
+        var bottomRightPoint: CGPoint = CGPoint(x: first.maxX, y: first.maxY)
         for faceRect in faces {
-            if CGRectGetMinX(faceRect) < topLeftPoint.x {
-                topLeftPoint.x = CGRectGetMinX(faceRect)
+            if faceRect.minX < topLeftPoint.x {
+                topLeftPoint.x = faceRect.minX
             }
-            if CGRectGetMinY(faceRect) < topLeftPoint.y {
-                topLeftPoint.y = CGRectGetMinY(faceRect)
+            if faceRect.minY < topLeftPoint.y {
+                topLeftPoint.y = faceRect.minY
             }
-            if CGRectGetMaxX(faceRect) > bottomRightPoint.x {
-                bottomRightPoint.x = CGRectGetMaxX(faceRect)
+            if faceRect.maxX > bottomRightPoint.x {
+                bottomRightPoint.x = faceRect.maxX
             }
-            if CGRectGetMaxY(faceRect) > bottomRightPoint.y {
-                bottomRightPoint.y = CGRectGetMaxY(faceRect)
+            if faceRect.maxY > bottomRightPoint.y {
+                bottomRightPoint.y = faceRect.maxY
             }
         }
-        let groupRect = CGRectMake(topLeftPoint.x,
-                                   topLeftPoint.y,
-                                   bottomRightPoint.x - topLeftPoint.x,
-                                   bottomRightPoint.y - topLeftPoint.y)
+        let groupRect = CGRect(x: topLeftPoint.x,
+                               y: topLeftPoint.y,
+                               width: bottomRightPoint.x - topLeftPoint.x,
+                               height: bottomRightPoint.y - topLeftPoint.y)
         return groupRect
     }
 
@@ -78,13 +78,13 @@ extension UIImage {
         var result = [CGRect]()
         for face in faces {
             let faceRect = face.bounds
-            let scaledFaceRect = faceRect.scaledRect(1 / scale)
+            let scaledFaceRect = faceRect.scaledRect(scale: 1 / scale)
 
             // convert from core graphics coordinate space
-            let convertedFaceRect = CGRectMake(scaledFaceRect.origin.x,
-                                               size.height - scaledFaceRect.origin.y - scaledFaceRect.size.height,
-                                               scaledFaceRect.size.width,
-                                               scaledFaceRect.size.height)
+            let convertedFaceRect = CGRect(x: scaledFaceRect.origin.x,
+                                           y: size.height - scaledFaceRect.origin.y - scaledFaceRect.size.height,
+                                           width: scaledFaceRect.size.width,
+                                           height: scaledFaceRect.size.height)
             result.append(convertedFaceRect)
         }
         return result
@@ -95,17 +95,18 @@ extension UIImage {
     private func detectFaces() -> [CIFaceFeature] {
         let faceDetector: CIDetector = CIDetector(ofType: CIDetectorTypeFace,
                                                   context: nil,
-                                                  options: [CIDetectorAccuracy: CIDetectorAccuracyLow])
-        var ciImage = self.CIImage
+                                                  options: [CIDetectorAccuracy: CIDetectorAccuracyLow])!
+        var ciImage = self.ciImage
 
         if ciImage == nil {
-            guard let cgImage = self.CGImage else {
+            guard let cgImage = self.cgImage else {
                 return []
             }
-            ciImage = UIKit.CIImage(CGImage: cgImage)
+
+            ciImage = UIKit.CIImage(cgImage: cgImage)
         }
 
-        let faces = faceDetector.featuresInImage(ciImage!, options: nil) as! [CIFaceFeature]
+        let faces = faceDetector.features(in: ciImage!, options: nil) as! [CIFaceFeature]
         return faces
     }
 }

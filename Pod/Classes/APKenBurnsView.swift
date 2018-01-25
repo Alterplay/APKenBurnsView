@@ -21,12 +21,12 @@ import QuartzCore
     /*
         Called when transition starts from one image to another
     */
-    optional func kenBurnsViewDidStartTransition(kenBurnsView: APKenBurnsView, toImage: UIImage)
+    @objc optional func kenBurnsViewDidStartTransition(kenBurnsView: APKenBurnsView, toImage: UIImage)
 
     /*
         Called when transition from one image to another is finished
     */
-    optional func kenBurnsViewDidFinishTransition(kenBurnsView: APKenBurnsView)
+    @objc optional func kenBurnsViewDidFinishTransition(kenBurnsView: APKenBurnsView)
 }
 
 
@@ -126,8 +126,8 @@ public class APKenBurnsView: UIView {
 
         stopWatch = StopWatch()
 
-        let image = dataSource?.nextImageForKenBurnsView(self)
-        startTransitionWithImage(image!, imageView: firstImageView, nextImageView: secondImageView)
+        let image = dataSource?.nextImageForKenBurnsView(kenBurnsView: self)
+        startTransitionWithImage(image: image!, imageView: firstImageView, nextImageView: secondImageView)
     }
 
     public func pauseAnimations() {
@@ -160,7 +160,7 @@ public class APKenBurnsView: UIView {
     private var animationDataSource: AnimationDataSource!
     private var facesDrawer: FacesDrawerProtocol!
 
-    private let notificationCenter = NSNotificationCenter.defaultCenter()
+    private let notificationCenter = NotificationCenter.default
 
     private var timer: BlockTimer?
     private var stopWatch: StopWatch!
@@ -181,11 +181,11 @@ public class APKenBurnsView: UIView {
         guard superview == nil else {
             notificationCenter.addObserver(self,
                                            selector: #selector(applicationWillResignActive),
-                                           name: UIApplicationWillResignActiveNotification,
+                                           name: NSNotification.Name.UIApplicationWillResignActive,
                                            object: nil)
             notificationCenter.addObserver(self,
                                            selector: #selector(applicationDidBecomeActive),
-                                           name: UIApplicationDidBecomeActiveNotification,
+                                           name: NSNotification.Name.UIApplicationDidBecomeActive,
                                            object: nil)
             return
         }
@@ -213,7 +213,7 @@ public class APKenBurnsView: UIView {
 
     // MARK: - Timer
 
-    private func startTimerWithDelay(delay: Double, callback: () -> ()) {
+    private func startTimerWithDelay(delay: Double, callback: @escaping () -> ()) {
         stopTimer()
 
         timer = BlockTimer(interval: delay, callback: callback)
@@ -240,12 +240,13 @@ public class APKenBurnsView: UIView {
             fatalError("Animation durations setup is invalid!")
         }
 
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+           DispatchQueue.main.async {
             self.stopWatch.start()
 
-            var animation = self.animationDataSource.buildAnimationForImage(image, forViewPortSize: self.bounds.size)
+            var animation = self.animationDataSource.buildAnimationForImage(image: image, forViewPortSize: self.bounds.size)
 
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
+                
 
                 let animationTimeCompensation = self.stopWatch.duration
                 animation = ImageAnimation(startState: animation.startState,
@@ -253,39 +254,39 @@ public class APKenBurnsView: UIView {
                                            duration: animation.duration - animationTimeCompensation)
 
                 imageView.image = image
-                imageView.animateWithImageAnimation(animation)
+                imageView.animateWithImageAnimation(animation: animation)
 
                 if self.showFaceRectangles {
-                    self.facesDrawer.drawFacesInView(imageView, image: image)
+                    self.facesDrawer.drawFacesInView(view: imageView, image: image)
                 }
 
                 let duration = self.buildAnimationDuration()
                 let delay = animation.duration - duration / 2
 
-                self.startTimerWithDelay(delay) {
+                self.startTimerWithDelay(delay: delay) {
 
-                    self.delegate?.kenBurnsViewDidStartTransition?(self, toImage: image)
+                    self.delegate?.kenBurnsViewDidStartTransition?(kenBurnsView: self, toImage: image)
 
-                    self.animateTransitionWithDuration(duration, imageView: imageView, nextImageView: nextImageView) {
-                        self.delegate?.kenBurnsViewDidFinishTransition?(self)
-                        self.facesDrawer.cleanUpForView(imageView)
+                    self.animateTransitionWithDuration(duration: duration, imageView: imageView, nextImageView: nextImageView) {
+                        self.delegate?.kenBurnsViewDidFinishTransition?(kenBurnsView: self)
+                        self.facesDrawer.cleanUpForView(view: imageView)
                     }
 
-                    var nextImage = self.dataSource?.nextImageForKenBurnsView(self)
+                    var nextImage = self.dataSource?.nextImageForKenBurnsView(kenBurnsView: self)
                     if nextImage == nil {
                         nextImage = image
                     }
 
-                    self.startTransitionWithImage(nextImage!, imageView: nextImageView, nextImageView: imageView)
+                    self.startTransitionWithImage(image: nextImage!, imageView: nextImageView, nextImageView: imageView)
                 }
             }
         }
     }
 
-    private func animateTransitionWithDuration(duration: Double, imageView: UIImageView, nextImageView: UIImageView, completion: () -> ()) {
-        UIView.animateWithDuration(duration,
+    private func animateTransitionWithDuration(duration: Double, imageView: UIImageView, nextImageView: UIImageView, completion: @escaping () -> ()) {
+        UIView.animate(withDuration: duration,
                                    delay: 0.0,
-                                   options: UIViewAnimationOptions.CurveEaseInOut,
+                                   options: UIViewAnimationOptions.curveEaseInOut,
                                    animations: {
                                        imageView.alpha = 0.0
                                        nextImageView.alpha = 1.0
@@ -314,8 +315,8 @@ public class APKenBurnsView: UIView {
 
     private func buildDefaultImageView() -> UIImageView {
         let imageView = UIImageView(frame: bounds)
-        imageView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
-        imageView.contentMode = UIViewContentMode.Center
+        imageView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        imageView.contentMode = UIViewContentMode.center
         self.addSubview(imageView)
 
         return imageView
