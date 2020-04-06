@@ -62,7 +62,7 @@ class BlockTimer {
                             userInfo: nil,
                             repeats: repeats)
 
-        RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
+        RunLoop.main.add(timer, forMode: RunLoop.Mode.commonModes)
 
         return timer
     }
