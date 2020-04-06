@@ -181,11 +181,11 @@ public class APKenBurnsView: UIView {
         guard superview == nil else {
             notificationCenter.addObserver(self,
                                            selector: #selector(applicationWillResignActive),
-                                           name: NSNotification.Name.UIApplicationWillResignActive,
+                                           name: UIApplication.willResignActiveNotification,
                                            object: nil)
             notificationCenter.addObserver(self,
                                            selector: #selector(applicationDidBecomeActive),
-                                           name: NSNotification.Name.UIApplicationDidBecomeActive,
+                                           name: UIApplication.didBecomeActiveNotification,
                                            object: nil)
             return
         }
@@ -286,7 +286,7 @@ public class APKenBurnsView: UIView {
     private func animateTransitionWithDuration(duration: Double, imageView: UIImageView, nextImageView: UIImageView, completion: @escaping () -> ()) {
         UIView.animate(withDuration: duration,
                                    delay: 0.0,
-                                   options: UIViewAnimationOptions.curveEaseInOut,
+                                   options: UIView.AnimationOptions.curveEaseInOut,
                                    animations: {
                                        imageView.alpha = 0.0
                                        nextImageView.alpha = 1.0
@@ -316,7 +316,7 @@ public class APKenBurnsView: UIView {
     private func buildDefaultImageView() -> UIImageView {
         let imageView = UIImageView(frame: bounds)
         imageView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        imageView.contentMode = UIViewContentMode.center
+        imageView.contentMode = UIView.ContentMode.center
         self.addSubview(imageView)
 
         return imageView
