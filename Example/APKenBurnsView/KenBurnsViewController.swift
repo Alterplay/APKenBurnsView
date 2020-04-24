@@ -29,12 +29,12 @@ class KenBurnsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationController!.navigationBarHidden = true
+        navigationController!.isNavigationBarHidden = true
 
         kenBurnsView.faceRecognitionMode = faceRecoginitionMode
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         self.kenBurnsView.startAnimations()
