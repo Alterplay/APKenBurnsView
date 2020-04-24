@@ -9,7 +9,7 @@ import QuartzCore
 
 extension CALayer {
     func pauseAnimations() {
-        let pausedTime: CFTimeInterval = self.convertTime(CACurrentMediaTime(), fromLayer: nil)
+        let pausedTime: CFTimeInterval = self.convertTime(CACurrentMediaTime(), from: nil)
         self.speed = 0.0
         self.timeOffset = pausedTime
     }
@@ -19,7 +19,7 @@ extension CALayer {
         self.speed = 1.0
         self.timeOffset = 0.0
         self.beginTime = 0.0
-        let timeSincePause: CFTimeInterval = self.convertTime(CACurrentMediaTime(), fromLayer: nil) - pausedTime
+        let timeSincePause: CFTimeInterval = self.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
         self.beginTime = timeSincePause
     }
 }

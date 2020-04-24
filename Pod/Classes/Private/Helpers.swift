@@ -7,24 +7,27 @@ import Foundation
 
 extension CGSize {
     func scaledSize(scale: CGFloat) -> CGSize {
-        return CGSizeMake(width * scale, height * scale)
+        return CGSize(width: width * scale, height: height * scale)
     }
 }
 
 
 extension CGRect {
     func scaledRect(scale: CGFloat) -> CGRect {
-        return CGRectMake(CGRectGetMinX(self) * scale,
-                          CGRectGetMinY(self) * scale,
-                          CGRectGetWidth(self) * scale,
-                          CGRectGetHeight(self) * scale)
+    
+    
+        
+        return CGRect(x: self.minX * scale,
+                      y: self.minY * scale,
+                      width: self.width * scale,
+                      height: self.height * scale)
     }
 
     func center() -> CGPoint {
-        return CGPointMake(CGRectGetMidX(self), CGRectGetMidY(self))
+        return CGPoint(x: self.midX, y: self.midY)
     }
 
     init(center: CGPoint, size: CGSize) {
-        self = CGRectMake(center.x - (size.width / 2), center.y - (size.height / 2), size.width, size.height)
+        self = CGRect(x: center.x - (size.width / 2), y: center.y - (size.height / 2), width: size.width, height: size.height)
     }
 }

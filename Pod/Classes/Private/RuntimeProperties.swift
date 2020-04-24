@@ -21,7 +21,7 @@ func setAssociatedObject<T>(object: AnyObject, value: T, associativeKey: UnsafeP
     if let v: AnyObject = value as? AnyObject {
         objc_setAssociatedObject(object, associativeKey, v, policy)
     } else {
-        objc_setAssociatedObject(object, associativeKey, box(value), policy)
+        objc_setAssociatedObject(object, associativeKey, box(x: value), policy)
     }
 }
 

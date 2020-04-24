@@ -15,20 +15,20 @@ extension UIView {
 
     private var storedAnimations: [String:CAAnimation]? {
         set {
-            setAssociatedObject(self,
+            setAssociatedObject(object: self,
                                 value: newValue,
                                 associativeKey: &RuntimePropertiesKeys.StoredAnimationsKey,
                                 policy: objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
         get {
-            return getAssociatedObject(self, associativeKey: &RuntimePropertiesKeys.StoredAnimationsKey)
+            return getAssociatedObject(object: self, associativeKey: &RuntimePropertiesKeys.StoredAnimationsKey)
         }
     }
 
     // MARK: - Public
 
     func backupAnimations() {
-        storedAnimations = currentAnimationsOnLayer(layer)
+        storedAnimations = currentAnimationsOnLayer(layer: layer)
     }
 
     func restoreAnimations() {
@@ -37,7 +37,7 @@ extension UIView {
         }
 
         layer.removeAllAnimations()
-        restoreAnimationsOnLayer(layer, animations: storedAnimations)
+        restoreAnimationsOnLayer(layer: layer, animations: storedAnimations)
         self.storedAnimations = nil
     }
 
@@ -49,7 +49,7 @@ extension UIView {
         if animationKeys != nil && animationKeys!.count > 0 {
             var currentAnimations = [String: CAAnimation]()
             for key in animationKeys! {
-                let animation = layer.animationForKey(key)!.copy() as! CAAnimation
+                let animation = layer.animation(forKey: key)!.copy() as! CAAnimation
                 currentAnimations[key] = animation
             }
             return currentAnimations
@@ -59,7 +59,7 @@ extension UIView {
 
     private func restoreAnimationsOnLayer(layer: CALayer, animations: [String:CAAnimation]) {
         for (key, value) in animations {
-            layer.addAnimation(value, forKey: key)
+            layer.add(value, forKey: key)
         }
     }
 }

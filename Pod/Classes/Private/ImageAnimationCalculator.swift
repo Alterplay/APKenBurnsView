@@ -6,11 +6,11 @@ import Foundation
 
 
 protocol ImageAnimationCalculatorProtocol {
-    func buildPinnedToEdgesPosition(imageSize imageSize: CGSize, viewPortSize: CGSize) -> CGPoint
-    func buildOppositeAnglePosition(startPosition startPosition: CGPoint, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint
-    func buildFacePosition(faceRect faceRect: CGRect, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint
+    func buildPinnedToEdgesPosition(imageSize: CGSize, viewPortSize: CGSize) -> CGPoint
+    func buildOppositeAnglePosition(startPosition: CGPoint, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint
+    func buildFacePosition(faceRect: CGRect, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint
     func buildAnimationDuration() -> Double
-    func buildRandomScale(imageSize imageSize: CGSize, viewPortSize: CGSize) -> CGFloat
+    func buildRandomScale(imageSize: CGSize, viewPortSize: CGSize) -> CGFloat
 }
 
 
@@ -31,7 +31,7 @@ class ImageAnimationCalculator: ImageAnimationCalculatorProtocol {
 
     // MARK: - Public
 
-    func buildPinnedToEdgesPosition(imageSize imageSize: CGSize, viewPortSize: CGSize) -> CGPoint {
+    func buildPinnedToEdgesPosition(imageSize: CGSize, viewPortSize: CGSize) -> CGPoint {
         let imageXDeviation = imageSize.width / 2 - viewPortSize.width / 2
         let imageYDeviation = imageSize.height / 2 - viewPortSize.height / 2
 
@@ -47,11 +47,11 @@ class ImageAnimationCalculator: ImageAnimationCalculatorProtocol {
             imagePositionY = randomGenerator.randomBool() ? -imageYDeviation : imageYDeviation
         }
 
-        let imagePosition = CGPointMake(imagePositionX, imagePositionY)
+        let imagePosition = CGPoint(x: imagePositionX, y: imagePositionY)
         return imagePosition
     }
 
-    func buildOppositeAnglePosition(startPosition startPosition: CGPoint, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint {
+    func buildOppositeAnglePosition(startPosition: CGPoint, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint {
         let imageXDeviation = imageSize.width / 2 - viewPortSize.width / 2
         let imageYDeviation = imageSize.height / 2 - viewPortSize.height / 2
 
@@ -69,13 +69,13 @@ class ImageAnimationCalculator: ImageAnimationCalculatorProtocol {
             imagePositionY = randomGenerator.randomCGFloat(min: -imageYDeviation, max: 0.0)
         }
 
-        let imageEndPosition = CGPointMake(imagePositionX, imagePositionY)
+        let imageEndPosition = CGPoint(x: imagePositionX, y: imagePositionY)
 
         return imageEndPosition
     }
 
-    func buildFacePosition(faceRect faceRect: CGRect, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint {
-        let imageCenter = CGPointMake(viewPortSize.width / 2, viewPortSize.height / 2)
+    func buildFacePosition(faceRect: CGRect, imageSize: CGSize, viewPortSize: CGSize) -> CGPoint {
+        let imageCenter = CGPoint(x: viewPortSize.width / 2, y: viewPortSize.height / 2)
         let imageFrame = CGRect(center: imageCenter, size: imageSize)
 
         let centerOfFaceRect = faceRect.center()
@@ -100,7 +100,7 @@ class ImageAnimationCalculator: ImageAnimationCalculatorProtocol {
 
         let positionX = -(centerOfFaceRect.x - viewPortSize.width / 2 + imageFrame.origin.x + xCompensation)
         let positionY = -(centerOfFaceRect.y - viewPortSize.height / 2 + imageFrame.origin.y + yCompensation)
-        let position = CGPointMake(positionX, positionY)
+        let position = CGPoint(x: positionX, y: positionY)
         return position
     }
 
@@ -117,7 +117,7 @@ class ImageAnimationCalculator: ImageAnimationCalculatorProtocol {
         return duration
     }
 
-    func buildRandomScale(imageSize imageSize: CGSize, viewPortSize: CGSize) -> CGFloat {
+    func buildRandomScale(imageSize: CGSize, viewPortSize: CGSize) -> CGFloat {
         let scaleFactorDeviation = animationDependencies.scaleFactorDeviation
         let scaleForAspectFill = imageScaleForAspectFill(imageSize: imageSize, viewPortSize: viewPortSize)
         let scaleDeviation = randomGenerator.randomCGFloat(min: 0.0, max: CGFloat(scaleFactorDeviation))
@@ -127,7 +127,7 @@ class ImageAnimationCalculator: ImageAnimationCalculatorProtocol {
 
     // MARK: - Private
 
-    private func imageScaleForAspectFill(imageSize imageSize: CGSize, viewPortSize: CGSize) -> CGFloat {
+    private func imageScaleForAspectFill(imageSize: CGSize, viewPortSize: CGSize) -> CGFloat {
         let widthScale = viewPortSize.width / imageSize.width
         let heightScale = viewPortSize.height / imageSize.height
         let scaleForAspectFill = max(heightScale, widthScale)
